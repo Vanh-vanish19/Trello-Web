@@ -3,7 +3,7 @@
   "private": true,
   "version": "0.0.0",
   "type": "module",
-  "author": "TrungQuanDev - Một Lập Trình Viên",
+  "author": "Vanish",
   "description": "https://youtube.com/@trungquandev",
   "engines": {
     "node": ">=18.x"
@@ -11,10 +11,14 @@
   "scripts": {
     "dev": "vite --host",
     "build": "vite build --base=./",
-    "lint": "eslint src --ext js,jsx --report-unused-disable-directives --max-warnings 0",
+    "lint": "eslin t src --ext js,jsx --report-unused-disable-directives --max-warnings 0",
     "preview": "vite preview"
   },
   "dependencies": {
+    "@emotion/react": "^11.11.0",
+    "@emotion/styled": "^11.11.0",
+    "@mui/icons-material": "^5.11.16",
+    "@mui/material": "^5.13.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0"
   },
