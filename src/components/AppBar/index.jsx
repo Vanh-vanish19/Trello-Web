@@ -20,13 +20,14 @@ import Profiles from './Menus/Profiles'
 
 const Search = styled('div')(({ theme }) => ({
   position: 'relative',
+  fontSize: '0.875rem',
   borderRadius: theme.shape.borderRadius,
   backgroundColor: alpha(theme.palette.common.white, 0.05),
   '&:hover': {
     backgroundColor: alpha(theme.palette.common.white, 0.1)
   },
-  marginLeft: 0,
-  width: '100%',
+  marginLeft: 10,
+  width: '40%',
   [theme.breakpoints.up('sm')]: {
     marginLeft: theme.spacing(1),
     width: 'auto'
@@ -34,6 +35,7 @@ const Search = styled('div')(({ theme }) => ({
 }))
 
 const SearchIconWrapper = styled('div')(({ theme }) => ({
+  color: theme.palette.primary.main,
   padding: theme.spacing(0, 2),
   height: '100%',
   position: 'absolute',
@@ -44,7 +46,8 @@ const SearchIconWrapper = styled('div')(({ theme }) => ({
 }))
 
 const StyledInputBase = styled(InputBase)(({ theme }) => ({
-  color: 'inherit',
+  color: theme.palette.primary.main,
+  fontSize: '0.875rem',
   width: '100%',
   '& .MuiInputBase-input': {
     padding: theme.spacing(1, 1, 1, 0),
@@ -52,9 +55,9 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
     paddingLeft: `calc(1em + ${theme.spacing(4)})`,
     transition: theme.transitions.create('width'),
     [theme.breakpoints.up('sm')]: {
-      width: '12ch',
+      width: '8ch',
       '&:focus': {
-        width: '20ch'
+        width: '15ch'
       }
     }
   }
@@ -68,19 +71,23 @@ function AppBar() {
       height: (theme) => theme.trello.appBarHeight,
       display: 'flex',
       alignItems: 'center',
-      justifyContent: 'space-between'
+      justifyContent: 'space-between',
+      gap: 2,
+      overflowX: 'auto'
     }}>
       <Box sx={{ color : 'primary.main', display: 'flex', alignItems: 'center', gap : 2 }}>
         <AppsIcon />
         <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
           <SvgIcon component={trelloIcon} inheritViewBox />
-          <Typography variant='span' sx={{ fontSize: 20, fontWeight: 'bold' }}>Trello</Typography>
+          <Typography variant='span' sx={{ fontSize: 20, fontWeight: 'bold', gap : 1 }}>Trello</Typography>
         </Box>
-        <WorkSpace />
-        <Recent />
-        <Starred />
-        <Templates />
-        <Button variant='outlined'>Create</Button>
+        <Box sx={{ display: { xs: 'none', md: 'flex' }, gap: 2 }}>
+          <WorkSpace />
+          <Recent />
+          <Starred />
+          <Templates />
+          <Button variant='outlined'>Create</Button>
+        </Box>
       </Box>
       <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
         <Search>
@@ -95,11 +102,11 @@ function AppBar() {
         <ModeSelect/>
         <ToolTip alt="Notifications" title="Notifications" sx={{ cursor : 'pointer' }}>
           <Badge color="secondary" variant='dot'>
-            <NotificationsIcon />
+            <NotificationsIcon sx={{ color: 'primary.main' }}/>
           </Badge>
         </ToolTip>
         <ToolTip alt="Help" title="Help" sx={{ cursor : 'pointer' }}>
-          <HelpOutlineIcon/>
+          <HelpOutlineIcon sx={{ color: 'primary.main' }}/>
         </ToolTip>
         <Profiles/>
       </Box>
