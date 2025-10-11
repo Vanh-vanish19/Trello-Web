@@ -1,4 +1,4 @@
-import { experimental_extendTheme as extendTheme} from '@mui/material/styles'
+import { experimental_extendTheme as extendTheme } from '@mui/material/styles'
 
 // Create a theme instance.
 const theme = extendTheme({
@@ -11,17 +11,17 @@ const theme = extendTheme({
       palette: {
         primary: {
           main: '#87cbf9ff'
-        },
-      },
+        }
+      }
     },
     dark: {
       palette: {
         primary: {
-          main: '#000'
-        },
-      },
-    },
-  },
+          main: '#1d1b36ff'
+        }
+      }
+    }
+  }
   // ...other properties
 })
 
