@@ -1,5 +1,4 @@
 import { experimental_extendTheme as extendTheme } from '@mui/material/styles'
-
 // Create a theme instance.
 const theme = extendTheme({
   trello:{
@@ -10,7 +9,7 @@ const theme = extendTheme({
     light: {
       palette: {
         primary: {
-          main: '#87cbf9ff'
+          main: '#064e7eff'
         }
       }
     },
@@ -21,8 +20,34 @@ const theme = extendTheme({
         }
       }
     }
+  },
+  components: {
+    MuiButton: {
+      styleOverrides: {
+        root: {
+          textTransform: 'none'
+        }
+      }
+    },
+    MuiOutlinedInput: {
+      styleOverrides: {
+        root: ({ theme }) => ({
+          color : theme.palette.primary.main,
+          fontSize: '0.875rem',
+          '.MuiOutlinedInput-notchedOutline': {
+            borderColor: theme.palette.primary.main
+          }
+        })
+      }
+    },
+    MuiInputLabel: {
+      styleOverrides: {
+        root: ({ theme }) => ({
+          color: theme.palette.primary.main
+        })
+      }
+    }
   }
-  // ...other properties
 })
 
 export default theme
