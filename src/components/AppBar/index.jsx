@@ -17,7 +17,7 @@ import ToolTip from '@mui/material/Tooltip'
 import Badge from '@mui/material/Badge'
 import HelpOutlineIcon from '@mui/icons-material/HelpOutline'
 import Profiles from './Menus/Profiles'
-
+import CreateIcon from '@mui/icons-material/Create'
 const Search = styled('div')(({ theme }) => ({
   position: 'relative',
   fontSize: '0.875rem',
@@ -66,7 +66,7 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
 function AppBar() {
   return (
     <Box px={2} sx={{
-      backgroundColor: 'primary.light',
+      backgroundColor: 'white',
       width: '100%',
       height: (theme) => theme.trello.appBarHeight,
       display: 'flex',
@@ -86,7 +86,7 @@ function AppBar() {
           <Recent />
           <Starred />
           <Templates />
-          <Button variant='outlined'>Create</Button>
+          <Button variant='outlined' startIcon={<CreateIcon/>}>Create</Button>
         </Box>
       </Box>
       <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
