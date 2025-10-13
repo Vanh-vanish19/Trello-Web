@@ -12,12 +12,13 @@ import Button from '@mui/material/Button'
 import AddIcon from '@mui/icons-material/Add'
 
 const Menu_Styles = {
-  color:'primary.main',
+  color:'white',
+  bgcolor:'transparent',
   border:'none',
   paddingX: '5px',
   borderRadius: '10px',
-  '& .MuiSvgIcon-root':{
-    color: 'primary.main'
+  '.MuiSvgIcon-root':{
+    color: 'white'
   },
   '&:hover':{
     backgroundColor: 'primary.10'
@@ -27,7 +28,6 @@ const Menu_Styles = {
 function BoardBar() {
   return (
     <Box sx={{
-      backgroundColor: 'white',
       width: '100%',
       height: (theme) => theme.trello.boardBarHeight,
       display: 'flex',
@@ -36,7 +36,8 @@ function BoardBar() {
       justifyContent: 'space-between',
       gap: 2,
       overflowX: 'auto',
-      borderTop:'1px solid #7ca2c5ff'
+      borderTop:'1px solid #ffffffff',
+      borderBottom:'1px solid #ffffffff'
     }}>
       <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
         <Chip
@@ -71,14 +72,32 @@ function BoardBar() {
         />
       </Box>
       <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
-        <Button variant='outlined' startIcon={<AddIcon/>}>Invite</Button>
+        <Button
+          sx={{
+            color:'white',
+            bgcolor:'transparent',
+            borderColor: 'white',
+            paddingX: '5px',
+            borderRadius: '4px',
+            '.MuiSvgIcon-root':{
+              color: 'white'
+            },
+            '&:hover':{
+              borderColor: 'white'
+            }
+          }}
+          variant='outlined'
+          startIcon={<AddIcon/>
+          }>Invite</Button>
         <AvatarGroup
           max={4}
           sx={{
             '& .MuiAvatar-root': {
               width: 32,
               height: 32,
-              fontSize: 16
+              fontSize: 16,
+              cursor: 'pointer',
+              '&:first-of-type': { bgcolor:'#a4b0be' }
             }
           }}
         >

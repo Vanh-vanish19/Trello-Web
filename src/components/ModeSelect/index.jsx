@@ -19,8 +19,30 @@ function ModeSelect() {
   return (
     <Box sx={{ minWidth: 120 }}>
       <FormControl sx={{ m: 1, minWidth: 120 }} size="small">
-        <InputLabel id="mode-select-label">Mode</InputLabel>
+        <InputLabel
+          sx={{
+            color: 'white',
+            '&.Mui-focused' : {
+              color: 'white'
+            }
+          }}
+          d="mode-select-label">Mode</InputLabel>
         <Select
+          sx={{
+            color: 'white',
+            '.MuiOutlinedInput-notchedOutline': {
+              borderColor: 'white'
+            },
+            '&:hover .MuiOutlinedInput-notchedOutline': {
+              borderColor: 'white'
+            },
+            '&.Mui-focused .MuiOutlinedInput-notchedOutline': {
+              borderColor: 'white'
+            },
+            '.MuiSvgIcon-root': {
+              color: 'white'
+            }
+          }}
           labelId="mode-select-label"
           id="mode-select"
           value={mode}
