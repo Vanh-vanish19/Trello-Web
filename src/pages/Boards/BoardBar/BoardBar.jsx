@@ -10,6 +10,7 @@ import AvatarGroup from '@mui/material/AvatarGroup'
 import ToolTip from '@mui/material/Tooltip'
 import Button from '@mui/material/Button'
 import AddIcon from '@mui/icons-material/Add'
+import { capitalizeFirstLetter } from '../../../utils/formatters'
 
 const Menu_Styles = {
   color:'white',
@@ -25,7 +26,7 @@ const Menu_Styles = {
   }
 }
 
-function BoardBar() {
+function BoardBar({ board }) {
   return (
     <Box sx={{
       width: '100%',
@@ -43,13 +44,13 @@ function BoardBar() {
         <Chip
           sx={Menu_Styles}
           icon={<SpaceDashboardIcon />}
-          label="Trello"
+          label= { capitalizeFirstLetter(board?.title) }
           clickable
         />
         <Chip
           sx={Menu_Styles}
           icon={<VpnLockIcon />}
-          label="Public/Private WorkSpace"
+          label= {capitalizeFirstLetter(board?.type)}
           clickable
         />
         <Chip
