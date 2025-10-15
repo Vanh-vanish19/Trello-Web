@@ -6,7 +6,11 @@ import { mockData } from '~/apis/mock-data'
 
 function Board() {
   return (
-    <Container disableGutters maxWidth={false} sx={{ height: '100vh', backgroundColor : 'primary.main' }}>
+    <Container disableGutters maxWidth={false}
+      sx={{
+        height: '100vh',
+        backgroundColor : 'primary.main'
+      }}>
       <AppBar />
       <BoardBar board ={ mockData?.board }/>
       <BoardContent board ={ mockData?.board }/>
