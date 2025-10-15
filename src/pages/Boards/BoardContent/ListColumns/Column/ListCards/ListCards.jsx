@@ -16,11 +16,9 @@ function ListCards({ cards }) {
         ${theme.spacing(5)} -
         ${theme.trello.colHeaderHeight} -
         ${theme.trello.colFooterHeight})`
-      }}>{ cards?.map((card, index) => {
-        return (
-          <TrelloCard key={ index } card={card}/>
-        )
-      })}
+      }}>{ cards?.map((card) => (
+        <TrelloCard key={ card._id } card={card}/>)
+      )}
     </Box>
   )
 }
