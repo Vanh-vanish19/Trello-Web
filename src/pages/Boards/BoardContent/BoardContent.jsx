@@ -6,7 +6,7 @@ import { useEffect, useState } from 'react'
 import { arrayMove } from '@dnd-kit/sortable'
 import Column from './ListColumns/Column/Column.jsx'
 import TrelloCard from './ListColumns/Column/ListCards/Card/Card.jsx'
-
+import { cloneDeep } from 'lodash'
 const ACTIVE_DRAG_ITEM_TYPE = {
   COLUMN : 'ACTIVE_DRAG_ITEM_TYPE_COLUMN',
   CARD : 'ACTIVE_DRAG_ITEM_TYPE_CARD'
@@ -36,6 +36,11 @@ function BoardContent({ board }) {
   const [activeDragItemType, setActiveDragItemType] = useState(null)
   const [activeDragItemData, setActiveDragItemData] = useState(null)
 
+  // tim column theo card id
+  const findColumnByCardId = (cardId) => {
+    return orderedColumns.find( column => column?.cards?.map( card => card._id).includes(cardId))
+  }
+
   useEffect(() => {
     const orderedColumns = mapOrder(board?.columns, board?.columnOrderIds, '_id')
     setOrderedColumns(orderedColumns)
@@ -48,8 +53,55 @@ function BoardContent({ board }) {
     setActiveDragItemData(event?.active?.data?.current)
   }
 
+  const handleDragOver = (event) => {
+    if (activeDragItemType === ACTIVE_DRAG_ITEM_TYPE.COLUMN) return
+    //console.log('handleDragOver: ', event)
+    const { active, over } = event
+    if (!over) return
+
+    const { id: activeDraggingCardId, data : { current : activeDraggingCardData } } = active // card dag drag vao
+    const { id: overCardId } = over //card dich den
+
+    const activeColumn = findColumnByCardId(activeDraggingCardId)
+    const overColumn = findColumnByCardId(overCardId)
+    if (!activeColumn || !overColumn) return
+
+    if ( activeColumn._id !== overColumn._id ) {
+      // console.log('activeColumn :', activeColumn)
+      // console.log('overColumn :', overColumn)
+      setOrderedColumns( prevCols => {
+        const overCardIdx = overColumn?.cards?.findIndex( c => c._id === overCardId)
+
+        let newCardIdx
+        const isBelowOverItem = active.rect.current.translated &&
+            active.rect.current.translated.top > over.rect.top + over.rect.height
+        const modifier = isBelowOverItem ? 1 : 0
+
+        newCardIdx = overCardIdx >= 0 ? overCardIdx + modifier : overColumn?.cards?.length + 1
+
+        const nextCols = cloneDeep(prevCols)
+        const nextActiveCol = nextCols.find( c => c._id === activeColumn._id)
+        const nextOverCol = nextCols.find( c => c._id === overColumn._id)
+
+        if ( nextActiveCol ) {
+          nextActiveCol.cards = nextActiveCol.cards.filter( c => c._id !== activeDraggingCardId)
+          nextActiveCol.cardOrderIds = nextActiveCol.cards.map( c => c._id)
+        }
+
+        if ( nextOverCol ) {
+          nextOverCol.cards = nextOverCol.cards.filter( c => c._id !== activeDraggingCardId)
+          nextOverCol.cards = nextOverCol.cards.toSpliced(newCardIdx, 0, activeDraggingCardData)
+          nextOverCol.cardOrderIds = nextOverCol.cards.map( c => c._id)
+        }
+        console.log('nextCols :', nextCols)
+        return nextCols
+      })
+    }
+  }
+
   const handleDragEnd = (event) => {
     //console.log('handleDragEnd: ', event)
+
     const { active, over } = event
     if (!over) return
     if (active.id !== over.id) {
@@ -70,6 +122,7 @@ function BoardContent({ board }) {
     <DndContext
       sensors={sensors}
       onDragStart={handleDragStart}
+      onDragOver={handleDragOver}
       onDragEnd={handleDragEnd}
     >
       <Box sx={{
