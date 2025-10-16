@@ -20,7 +20,8 @@ function TrelloCard({ card }) {
     touchAction : 'none',
     transform: CSS.Translate.toString(transform),
     transition,
-    opacity: isDragging ? 0.5 : 1
+    opacity: isDragging ? 0.5 : 1,
+    border: isDragging ? '1px solid grey' : undefined
   }
 
   const shouldShowCardAction = () => {
