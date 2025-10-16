@@ -1,7 +1,7 @@
 export const mockData = {
   board: {
     _id: 'board-id-01',
-    title: 'Learm MERN Stack Board',
+    title: 'Learm MERN Stack',
     description: 'Pro MERN stack Course',
     type: 'public', // 'private'
     ownerIds: [], // Những users là Admin của board
