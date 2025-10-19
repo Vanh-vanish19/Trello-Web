@@ -6,7 +6,7 @@ import { useEffect, useState } from 'react'
 import { arrayMove } from '@dnd-kit/sortable'
 import Column from './ListColumns/Column/Column.jsx'
 import TrelloCard from './ListColumns/Column/ListCards/Card/Card.jsx'
-import { cloneDeep } from 'lodash'
+import { cloneDeep, set } from 'lodash'
 const ACTIVE_DRAG_ITEM_TYPE = {
   COLUMN : 'ACTIVE_DRAG_ITEM_TYPE_COLUMN',
   CARD : 'ACTIVE_DRAG_ITEM_TYPE_CARD'
@@ -35,7 +35,7 @@ function BoardContent({ board }) {
   const [activeDragItemId, setActiveDragItemId] = useState(null)
   const [activeDragItemType, setActiveDragItemType] = useState(null)
   const [activeDragItemData, setActiveDragItemData] = useState(null)
-
+  const [oldColumnDraggingCard, setOldColumnDraggingCard] = useState(null)
   // tim column theo card id
   const findColumnByCardId = (cardId) => {
     return orderedColumns.find( column => column?.cards?.map( card => card._id).includes(cardId))
@@ -51,6 +51,9 @@ function BoardContent({ board }) {
     setActiveDragItemId(event?.active?.id)
     setActiveDragItemType(event?.active?.data?.current?.columnId ? ACTIVE_DRAG_ITEM_TYPE.CARD : ACTIVE_DRAG_ITEM_TYPE.COLUMN)
     setActiveDragItemData(event?.active?.data?.current)
+    if ( event?.active?.data?.current?.columnId ) {
+      setOldColumnDraggingCard(findColumnByCardId(event?.active?.id))
+    }
   }
 
   const handleDragOver = (event) => {
@@ -101,19 +104,48 @@ function BoardContent({ board }) {
 
   const handleDragEnd = (event) => {
     //console.log('handleDragEnd: ', event)
-
     const { active, over } = event
+
+    if ( activeDragItemType == ACTIVE_DRAG_ITEM_TYPE.CARD ) {
+      const { id: activeDraggingCardId, data : { current : activeDraggingCardData } } = active // card dag drag vao
+      const { id: overCardId } = over //card dich den
+
+      const activeColumn = findColumnByCardId(activeDraggingCardId)
+      const overColumn = findColumnByCardId(overCardId)
+      if (!activeColumn || !overColumn) return
+
+      if( oldColumnDraggingCard._id !== overColumn._id ) {
+        //console.log('active khacs columns')
+      } else {
+        //console.log('active cung columns')
+        const oldCardIndex = oldColumnDraggingCard?.cards?.findIndex( c => c._id === activeDragItemId)
+        const newCardIndex = overColumn?.cards?.findIndex( c => c._id === over.id)
+        const dndOrderedCards = arrayMove(oldColumnDraggingCard?.cards, oldCardIndex, newCardIndex)
+        //console.log('dndOrderedCards :', dndOrderedCards)
+        setOrderedColumns(prevCols => {
+          const nextCols = cloneDeep(prevCols)
+          const targetCol = nextCols.find(c => c._id === overColumn._id)
+          //console.log('targetCol :', targetCol)
+          targetCol.cards = dndOrderedCards
+          targetCol.cardOrderIds = dndOrderedCards.map( c => c._id)
+
+          return nextCols
+        })
+      }
+    }
     if (!over) return
-    if (active.id !== over.id) {
-      const oldIndex = orderedColumns.findIndex( c => c._id === active.id)
-      const newIndex = orderedColumns.findIndex( c => c._id === over.id)
-      const dndOrderedColumns = arrayMove(orderedColumns, oldIndex, newIndex)
+    if ( activeDragItemType == ACTIVE_DRAG_ITEM_TYPE.COLUMN && active.id !== over.id ) {
+      const oldColumnIndex = orderedColumns.findIndex( c => c._id === active.id)
+      const newColumnIndex = orderedColumns.findIndex( c => c._id === over.id)
+      const dndOrderedColumns = arrayMove(orderedColumns, oldColumnIndex, newColumnIndex)
       //const dndOrderedColumnsIds = dndOrderedColumns.map( c => c._id )dung api update data
       setOrderedColumns(dndOrderedColumns)
     }
+
     setActiveDragItemData(null)
     setActiveDragItemId(null)
     setActiveDragItemType(null)
+    setOldColumnDraggingCard(null)
   }
   // console.log('activeDragItemId :' , activeDragItemId )
   // console.log('activeDragItemType :', activeDragItemType )
