@@ -1,8 +1,8 @@
 import Box from '@mui/material/Box'
 import ListColumns from './ListColumns/ListColumns'
 import { mapOrder } from '~/utils/sorts'
-import { DndContext, PointerSensor, useSensor, useSensors, MouseSensor, TouchSensor, DragOverlay, closestCorners } from '@dnd-kit/core'
-import { useEffect, useState } from 'react'
+import { DndContext, PointerSensor, useSensor, useSensors, MouseSensor, TouchSensor, DragOverlay, closestCorners, pointerWithin, rectIntersection, getFirstCollision, closestCenter } from '@dnd-kit/core'
+import { useEffect, useState, useCallback, useRef } from 'react'
 import { arrayMove } from '@dnd-kit/sortable'
 import Column from './ListColumns/Column/Column.jsx'
 import TrelloCard from './ListColumns/Column/ListCards/Card/Card.jsx'
@@ -36,6 +36,8 @@ function BoardContent({ board }) {
   const [activeDragItemType, setActiveDragItemType] = useState(null)
   const [activeDragItemData, setActiveDragItemData] = useState(null)
   const [oldColumnDraggingCard, setOldColumnDraggingCard] = useState(null)
+
+  const lastOverId = useRef(null)
   // tim column theo card id
   const findColumnByCardId = (cardId) => {
     return orderedColumns.find( column => column?.cards?.map( card => card._id).includes(cardId))
@@ -178,10 +180,40 @@ function BoardContent({ board }) {
   // console.log('activeDragItemId :' , activeDragItemId )
   // console.log('activeDragItemType :', activeDragItemType )
   // console.log('activeDragItemData :', activeDragItemData )
+
+
+  const collistionDetactionStrategy = useCallback( (args) => {
+    if ( activeDragItemType === ACTIVE_DRAG_ITEM_TYPE.COLUMN ) {
+      return closestCorners( { ...args } )
+    }
+    const pointerIntersections = pointerWithin(args)
+    const intersections = pointerIntersections?.length > 0 ? pointerIntersections : rectIntersection(args)
+
+    let overId = getFirstCollision(intersections, 'id')
+    //console.log('overId :', overId)
+    if ( overId ) {
+      const checkColumn = orderedColumns.find( col => col._id === overId)
+      if ( checkColumn) {
+        // console.log('overid before' , overId)
+        overId = closestCenter({
+          ...args,
+          droppableContainers : args.droppableContainers.filter( container => {
+            return (container.id !== overId && checkColumn?.cardOrderIds?.includes(container.id))
+          })
+        })[0]?.id
+        // console.log('overid after' , overId)
+      }
+      lastOverId.current = overId
+      return [{ id: overId }]
+    }
+    return lastOverId.current ? [{ id : lastOverId.current }] : []
+  }, [activeDragItemType, orderedColumns])
+
   return (
     <DndContext
       sensors={sensors}
-      collisionDetection={ closestCorners }
+      //collisionDetection={ closestCorners }
+      collisionDetection= { collistionDetactionStrategy }
       onDragStart={handleDragStart}
       onDragOver={handleDragOver}
       onDragEnd={handleDragEnd}
