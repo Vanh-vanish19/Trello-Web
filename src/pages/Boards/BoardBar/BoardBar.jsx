@@ -41,12 +41,14 @@ function BoardBar({ board }) {
       borderBottom:'1px solid #ffffffff'
     }}>
       <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
-        <Chip
-          sx={Menu_Styles}
-          icon={<SpaceDashboardIcon />}
-          label= { capitalizeFirstLetter(board?.title) }
-          clickable
-        />
+        <ToolTip title={board?.description}>
+          <Chip
+            sx={Menu_Styles}
+            icon={<SpaceDashboardIcon />}
+            label= { capitalizeFirstLetter(board?.title) }
+            clickable
+          />
+        </ToolTip>
         <Chip
           sx={Menu_Styles}
           icon={<VpnLockIcon />}
