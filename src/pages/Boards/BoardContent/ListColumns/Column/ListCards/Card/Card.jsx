@@ -33,7 +33,9 @@ function TrelloCard({ card }) {
         cursor: 'pointer',
         boxShadow: '0 1px 1px rgba(0, 0, 0, 0.3)',
         overflow: 'unset',
-        display: card?.FE_PLACEHOLDER_CARD ? 'none' : 'block'
+        display: card?.FE_PLACEHOLDER_CARD ? 'none' : 'block',
+        border:'1px solid transparent',
+        '&:hover': { borderColor: (theme) => theme.palette.primary.main }
       }}
     >{card?.cover &&
       <CardMedia
