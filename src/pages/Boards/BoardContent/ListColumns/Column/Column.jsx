@@ -191,9 +191,11 @@ function Column({ column }) {
                 size="small"
                 placeholder="Enter a title..."
                 variant="outlined"
+                type="text"
                 value={newCardTitle}
                 onChange={(e) => setNewCardTitle(e.target.value)}
                 autoFocus
+                data-no-dnd="true"
                 sx={{
                   minWidth: 'auto',
                   flex: 1,
