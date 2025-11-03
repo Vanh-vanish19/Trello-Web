@@ -1,7 +1,8 @@
 import Box from '@mui/material/Box'
 import ListColumns from './ListColumns/ListColumns'
 import { mapOrder } from '~/utils/sorts'
-import { DndContext, PointerSensor, useSensor, useSensors, MouseSensor, TouchSensor, DragOverlay, closestCorners, pointerWithin, getFirstCollision } from '@dnd-kit/core'
+import { DndContext, useSensor, useSensors, DragOverlay, closestCorners, pointerWithin, getFirstCollision } from '@dnd-kit/core'
+import { MouseSensor, TouchSensor, PointerSensor } from '~/customLib/DndKitSensors'
 import { useEffect, useState, useCallback, useRef } from 'react'
 import { arrayMove } from '@dnd-kit/sortable'
 import Column from './ListColumns/Column/Column.jsx'
@@ -188,7 +189,6 @@ function BoardContent({ board }) {
   // console.log('activeDragItemId :' , activeDragItemId )
   // console.log('activeDragItemType :', activeDragItemType )
   // console.log('activeDragItemData :', activeDragItemData )
-
 
   const collistionDetactionStrategy = useCallback( (args) => {
     if ( activeDragItemType === ACTIVE_DRAG_ITEM_TYPE.COLUMN ) {
