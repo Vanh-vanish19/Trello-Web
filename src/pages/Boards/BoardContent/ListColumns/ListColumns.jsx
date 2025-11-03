@@ -1,10 +1,11 @@
+import { useState } from 'react'
+import { toast } from 'react-toastify'
 import Box from '@mui/material/Box'
 import Column from './Column/Column'
 import Button from '@mui/material/Button'
 import TextField from '@mui/material/TextField'
 import CloseIcon from '@mui/icons-material/Close'
 import NoteAddIcon from '@mui/icons-material/NoteAdd'
-import { useState } from 'react'
 import { SortableContext, horizontalListSortingStrategy } from '@dnd-kit/sortable'
 
 function ListColumns({ columns }) {
@@ -12,7 +13,10 @@ function ListColumns({ columns }) {
   const [newColTitle, setNewColTitle] = useState('')
 
   const addNewCol = () => {
-    if (!newColTitle) return
+    if (!newColTitle) {
+      toast.error('Column title is required')
+      return
+    }
     setOpenNewColForm(false)
     setNewColTitle('')
   }
