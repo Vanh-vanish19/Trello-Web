@@ -14,7 +14,7 @@ const ACTIVE_DRAG_ITEM_TYPE = {
   CARD : 'ACTIVE_DRAG_ITEM_TYPE_CARD'
 }
 
-function BoardContent({ board }) {
+function BoardContent({ board, createNewCol, createNewCard }) {
   const pointerSensor = useSensor(PointerSensor, {
     activationConstraint: {
       distance: 10
@@ -190,7 +190,7 @@ function BoardContent({ board }) {
   // console.log('activeDragItemType :', activeDragItemType )
   // console.log('activeDragItemData :', activeDragItemData )
 
-  const collistionDetactionStrategy = useCallback( (args) => {
+  const collisionDetectionStrategy = useCallback( (args) => {
     if ( activeDragItemType === ACTIVE_DRAG_ITEM_TYPE.COLUMN ) {
       return closestCorners( { ...args } )
     }
@@ -204,7 +204,7 @@ function BoardContent({ board }) {
     if ( overId ) {
       const checkColumn = orderedColumns.find( col => col._id === overId)
       if ( checkColumn) {
-        // console.log('overid before' , overId)
+        // console.log('overId before' , overId)
         overId = closestCorners({
           ...args,
           droppableContainers : args.droppableContainers.filter( container => {
@@ -223,7 +223,7 @@ function BoardContent({ board }) {
     <DndContext
       sensors={sensors}
       //collisionDetection={ closestCorners }
-      collisionDetection= { collistionDetactionStrategy }
+      collisionDetection= { collisionDetectionStrategy }
       onDragStart={handleDragStart}
       onDragOver={handleDragOver}
       onDragEnd={handleDragEnd}
@@ -235,7 +235,11 @@ function BoardContent({ board }) {
         display: 'flex'
         //alignItems: 'center'
       }}>
-        <ListColumns columns={orderedColumns}/>
+        <ListColumns
+          columns={orderedColumns}
+          createNewCol={createNewCol}
+          createNewCard={createNewCard}
+        />
         <DragOverlay>
           {(!activeDragItemId || !activeDragItemType) && null}
           {(activeDragItemType === ACTIVE_DRAG_ITEM_TYPE.COLUMN) && <Column column={activeDragItemData}/>}

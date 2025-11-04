@@ -24,7 +24,7 @@ import { useSortable } from '@dnd-kit/sortable'
 import { CSS } from '@dnd-kit/utilities'
 import { useState } from 'react'
 
-function Column({ column }) {
+function Column({ column, createNewCard }) {
   const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({
     id: column._id,
     data : { ...column }
@@ -50,15 +50,20 @@ function Column({ column }) {
 
   const [openNewCardForm, setOpenNewCardForm] = useState(false)
   const [newCardTitle, setNewCardTitle] = useState('')
-
-  const addNewCard = () => {
-    if (!newCardTitle) return
-    setOpenNewCardForm(false)
-    setNewCardTitle('')
-  }
   const toggleOpenNewCardForm = () => {
     setOpenNewCardForm(!openNewCardForm)
-    setNewCardTitle('') // Reset text khi đóng form
+  }
+  const addNewCard = async () => {
+    if (!newCardTitle) return
+
+    const newCardData = {
+      title: newCardTitle,
+      columnId: column._id
+    }
+    await createNewCard(newCardData)
+
+    toggleOpenNewCardForm()
+    setNewCardTitle('')
   }
   return (
     <div ref={setNodeRef} style={dndKitColumnStyle} {...attributes}>
