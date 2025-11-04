@@ -139,7 +139,7 @@ function BoardContent({ board, createNewCol, createNewCard }) {
 
     if ( activeDragItemType == ACTIVE_DRAG_ITEM_TYPE.CARD ) {
       const { id: activeDraggingCardId, data : { current : activeDraggingCardData } } = active // card dag drag vao
-      const { id: overCardId } = over //card dich den
+      const { id: overCardId } = over //card den
 
       const activeColumn = findColumnByCardId(activeDraggingCardId)
       const overColumn = findColumnByCardId(overCardId)
