@@ -8,22 +8,27 @@ import CloseIcon from '@mui/icons-material/Close'
 import NoteAddIcon from '@mui/icons-material/NoteAdd'
 import { SortableContext, horizontalListSortingStrategy } from '@dnd-kit/sortable'
 
-function ListColumns({ columns }) {
+function ListColumns({ columns, createNewCol, createNewCard }) {
   const [openNewColForm, setOpenNewColForm] = useState(false)
   const [newColTitle, setNewColTitle] = useState('')
 
-  const addNewCol = () => {
+  const toggleOpenNewColForm = () => {
+    setOpenNewColForm(!openNewColForm)
+  }
+  const addNewCol = async () => {
     if (!newColTitle) {
       toast.error('Column title is required')
       return
     }
-    setOpenNewColForm(false)
-    setNewColTitle('')
-  }
 
-  const toggleOpenNewColForm = () => {
-    setOpenNewColForm(!openNewColForm)
-    setNewColTitle('') // Reset text khi đóng form
+    //create data to call Api
+    const newColData = {
+      title: newColTitle
+    }
+    await createNewCol(newColData)
+
+    toggleOpenNewColForm()
+    setNewColTitle('')
   }
 
   return (
@@ -41,7 +46,7 @@ function ListColumns({ columns }) {
           overflowY: 'hidden'
         }}>
         { columns?.map((column) =>
-          ( <Column key={ column._id } column={column}/> )
+          ( <Column key={ column._id } column={column} createNewCard = {createNewCard}/> )
         )}
         { !openNewColForm
           ?<Box onClick={toggleOpenNewColForm}
