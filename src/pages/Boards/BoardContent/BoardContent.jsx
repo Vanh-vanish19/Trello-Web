@@ -14,7 +14,7 @@ const ACTIVE_DRAG_ITEM_TYPE = {
   CARD : 'ACTIVE_DRAG_ITEM_TYPE_CARD'
 }
 
-function BoardContent({ board, createNewCol, createNewCard, moveColumn }) {
+function BoardContent({ board, createNewCol, createNewCard, moveColumns }) {
   const pointerSensor = useSensor(PointerSensor, {
     activationConstraint: {
       distance: 10
@@ -178,7 +178,7 @@ function BoardContent({ board, createNewCol, createNewCard, moveColumn }) {
       const newColumnIndex = orderedColumns.findIndex( c => c._id === over.id)
       const dndOrderedColumns = arrayMove(orderedColumns, oldColumnIndex, newColumnIndex)
 
-      moveColumn(dndOrderedColumns)
+      moveColumns(dndOrderedColumns)
       setOrderedColumns(dndOrderedColumns)
     }
 

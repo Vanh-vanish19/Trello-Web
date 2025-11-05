@@ -55,13 +55,13 @@ function Board() {
     setBoard(newBoard)
   }
 
-  const moveColumn = async(dndOrderedColumns) => {
+  const moveColumns = async(dndOrderedColumns) => {
     const dndOrderedColumnsIds = dndOrderedColumns.map( c => c._id )
     const newBoard = { ...board }
     newBoard.columns = dndOrderedColumns
     newBoard.columnOrderIds = dndOrderedColumnsIds
-
-    await updateBoardDetailsAPI(newBoard._id, { dndOrderedColumnsIds: newBoard.columnOrderIds } )
+    setBoard(newBoard)
+    await updateBoardDetailsAPI(newBoard._id, { columnOrderIds: newBoard.columnOrderIds } )
   }
   return (
     <Container disableGutters maxWidth={false}
@@ -75,7 +75,7 @@ function Board() {
         board = { board }
         createNewCol = { createNewCol }
         createNewCard= { createNewCard }
-        moveColumn = { moveColumn }
+        moveColumns = { moveColumns }
       />
     </Container>
   )
