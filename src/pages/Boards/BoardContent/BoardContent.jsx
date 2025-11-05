@@ -14,7 +14,7 @@ const ACTIVE_DRAG_ITEM_TYPE = {
   CARD : 'ACTIVE_DRAG_ITEM_TYPE_CARD'
 }
 
-function BoardContent({ board, createNewCol, createNewCard }) {
+function BoardContent({ board, createNewCol, createNewCard, moveColumn }) {
   const pointerSensor = useSensor(PointerSensor, {
     activationConstraint: {
       distance: 10
@@ -177,7 +177,8 @@ function BoardContent({ board, createNewCol, createNewCard }) {
       const oldColumnIndex = orderedColumns.findIndex( c => c._id === active.id)
       const newColumnIndex = orderedColumns.findIndex( c => c._id === over.id)
       const dndOrderedColumns = arrayMove(orderedColumns, oldColumnIndex, newColumnIndex)
-      //const dndOrderedColumnsIds = dndOrderedColumns.map( c => c._id )dung api update data
+
+      moveColumn(dndOrderedColumns)
       setOrderedColumns(dndOrderedColumns)
     }
 
