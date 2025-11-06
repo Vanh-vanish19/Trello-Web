@@ -14,7 +14,7 @@ const ACTIVE_DRAG_ITEM_TYPE = {
   CARD : 'ACTIVE_DRAG_ITEM_TYPE_CARD'
 }
 
-function BoardContent({ board, createNewCol, createNewCard, moveColumns }) {
+function BoardContent({ board, createNewCol, createNewCard, moveColumns, moveCardInColumn }) {
   const pointerSensor = useSensor(PointerSensor, {
     activationConstraint: {
       distance: 10
@@ -156,20 +156,21 @@ function BoardContent({ board, createNewCol, createNewCard, moveColumns }) {
           activeDraggingCardData
         )
       } else {
-        //console.log('active cung columns')
         const oldCardIndex = oldColumnDraggingCard?.cards?.findIndex( c => c._id === activeDragItemId)
         const newCardIndex = overColumn?.cards?.findIndex( c => c._id === over.id)
         const dndOrderedCards = arrayMove(oldColumnDraggingCard?.cards, oldCardIndex, newCardIndex)
+        const dndOrderedCardIds = dndOrderedCards.map( c => c._id)
         //console.log('dndOrderedCards :', dndOrderedCards)
         setOrderedColumns(prevCols => {
           const nextCols = cloneDeep(prevCols)
           const targetCol = nextCols.find(c => c._id === overColumn._id)
           //console.log('targetCol :', targetCol)
           targetCol.cards = dndOrderedCards
-          targetCol.cardOrderIds = dndOrderedCards.map( c => c._id)
+          targetCol.cardOrderIds = dndOrderedCardIds
 
           return nextCols
         })
+        moveCardInColumn(dndOrderedCards, dndOrderedCardIds, oldColumnDraggingCard._id)
       }
     }
     if (!over) return

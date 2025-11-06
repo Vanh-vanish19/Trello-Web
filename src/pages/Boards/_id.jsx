@@ -3,7 +3,12 @@ import AppBar from '~/components/AppBar/AppBar.jsx'
 import BoardBar from './BoardBar/BoardBar.jsx'
 import BoardContent from './BoardContent/BoardContent.jsx'
 import { useEffect, useState } from 'react'
-import { fetchBoardDetailsAPI, createNewColumnApi, createNewCardApi, updateBoardDetailsAPI } from '~/apis'
+import {
+  fetchBoardDetailsAPI,
+  createNewColumnApi,
+  createNewCardApi,
+  updateBoardDetailsAPI,
+  updateColumnDetailsAPI } from '~/apis'
 // import { mockData } from '../../apis/mock-data.js'
 import { genPlaceholderCard } from '~/utils/formatters'
 import { isEmpty } from 'lodash'
@@ -63,6 +68,20 @@ function Board() {
     setBoard(newBoard)
     await updateBoardDetailsAPI(newBoard._id, { columnOrderIds: newBoard.columnOrderIds } )
   }
+
+  const moveCardInColumn = (dndOrderedCards, dndOrderedCardIds, columnId) => {
+    //update state
+    const newBoard = { ...board }
+    const columnToUpdate = newBoard.columns.find( c => c._id === columnId)
+    if (columnToUpdate) {
+      columnToUpdate.cards.push(dndOrderedCards)
+      columnToUpdate.cardOrderIds.push(dndOrderedCardIds)
+    }
+    setBoard(newBoard)
+
+    //call api
+    updateColumnDetailsAPI(columnId, { cardOrderIds: dndOrderedCardIds })
+  }
   return (
     <Container disableGutters maxWidth={false}
       sx={{
@@ -76,6 +95,7 @@ function Board() {
         createNewCol = { createNewCol }
         createNewCard= { createNewCard }
         moveColumns = { moveColumns }
+        moveCardInColumn = { moveCardInColumn }
       />
     </Container>
   )
