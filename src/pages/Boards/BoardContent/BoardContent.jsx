@@ -13,7 +13,7 @@ const ACTIVE_DRAG_ITEM_TYPE = {
   CARD : 'ACTIVE_DRAG_ITEM_TYPE_CARD'
 }
 
-function BoardContent({ board, createNewCol, createNewCard, moveColumns, moveCardInColumn }) {
+function BoardContent({ board, createNewCol, createNewCard, moveColumns, moveCardInColumn, moveCardToDifferentColumn }) {
   const pointerSensor = useSensor(PointerSensor, {
     activationConstraint: {
       distance: 10
@@ -56,7 +56,8 @@ function BoardContent({ board, createNewCol, createNewCard, moveColumns, moveCar
     over,
     activeColumn,
     activeDraggingCardId,
-    activeDraggingCardData
+    activeDraggingCardData,
+    triggerFrom
   ) => {
     setOrderedColumns( prevCols => {
       const overCardIdx = overColumn?.cards?.findIndex( c => c._id === overCardId)
@@ -88,6 +89,9 @@ function BoardContent({ board, createNewCol, createNewCard, moveColumns, moveCar
         nextOverCol.cards = nextOverCol.cards.filter( c => c._id !== activeDraggingCardId)
         nextOverCol.cards = nextOverCol.cards.toSpliced(newCardIdx, 0, activeDraggingCardData)
         nextOverCol.cardOrderIds = nextOverCol.cards.map( c => c._id)
+      }
+      if (triggerFrom === 'handleDragOver') {
+        moveCardToDifferentColumn(activeDraggingCardId, oldColumnDraggingCard._id, nextOverCol._id, nextCols )
       }
       //console.log('nextCols :', nextCols)
       return nextCols
@@ -127,7 +131,8 @@ function BoardContent({ board, createNewCol, createNewCard, moveColumns, moveCar
         over,
         activeColumn,
         activeDraggingCardId,
-        activeDraggingCardData
+        activeDraggingCardData,
+        'handleDragOver'
       )
     }
   }
@@ -152,7 +157,8 @@ function BoardContent({ board, createNewCol, createNewCard, moveColumns, moveCar
           over,
           activeColumn,
           activeDraggingCardId,
-          activeDraggingCardData
+          activeDraggingCardData,
+          'handleDragEnd'
         )
       } else {
         const oldCardIndex = oldColumnDraggingCard?.cards?.findIndex( c => c._id === activeDragItemId)
