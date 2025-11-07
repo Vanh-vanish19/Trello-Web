@@ -9,7 +9,9 @@ import {
   createNewColumnApi,
   createNewCardApi,
   updateBoardDetailsAPI,
-  updateColumnDetailsAPI } from '~/apis'
+  updateColumnDetailsAPI,
+  moveCardToDifferentColumnAPI
+} from '~/apis'
 // import { mockData } from '../../apis/mock-data.js'
 import { genPlaceholderCard } from '~/utils/formatters'
 import { isEmpty } from 'lodash'
@@ -90,6 +92,22 @@ function Board() {
     //call api
     updateColumnDetailsAPI(columnId, { cardOrderIds: dndOrderedCardIds })
   }
+  const moveCardToDifferentColumn = ( currentCardId, prevColumnId, nextColumnId, dndOrderedColumns ) => {
+    const dndOrderedColumnsIds = dndOrderedColumns.map( c => c._id )
+    const newBoard = { ...board }
+    newBoard.columns = dndOrderedColumns
+    newBoard.columnOrderIds = dndOrderedColumnsIds
+    setBoard(newBoard)
+    //call api
+    moveCardToDifferentColumnAPI({
+      currentCardId,
+      prevColumnId,
+      prevCardOrderIds: dndOrderedColumns.find( c => c._id === prevColumnId).cardOrderIds,
+      nextColumnId,
+      nextCardOrderIds: dndOrderedColumns.find( c => c._id === nextColumnId).cardOrderIds
+    })
+  }
+
   if (!board) {
     return (
       <Box sx={{
@@ -118,6 +136,7 @@ function Board() {
         createNewCard= { createNewCard }
         moveColumns = { moveColumns }
         moveCardInColumn = { moveCardInColumn }
+        moveCardToDifferentColumn = { moveCardToDifferentColumn }
       />
     </Container>
   )
