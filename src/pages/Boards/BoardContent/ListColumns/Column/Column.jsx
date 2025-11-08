@@ -22,8 +22,10 @@ import ListCards from './ListCards/ListCards'
 import { useSortable } from '@dnd-kit/sortable'
 import { CSS } from '@dnd-kit/utilities'
 import { useState } from 'react'
+import { useConfirm } from 'material-ui-confirm'
 
-function Column({ column, createNewCard }) {
+
+function Column({ column, createNewCard, deleteColumnDetail }) {
   const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({
     id: column._id,
     data : { ...column }
@@ -63,6 +65,19 @@ function Column({ column, createNewCard }) {
 
     toggleOpenNewCardForm()
     setNewCardTitle('')
+  }
+  const confirmDelete = useConfirm()
+  const handleDeleteColumn = async () => {
+    const { confirmed } = await confirmDelete({
+      title: 'Delete Column',
+      content: 'This action will delete this column!! Are you sure?',
+      confirmationText: 'Delete',
+      cancellationText: 'Cancel',
+      confirmationButtonProps: { color: 'warning', autoFocus: true }
+    })
+    if (confirmed) {
+      deleteColumnDetail(column._id)
+    }
   }
   return (
     <div ref={setNodeRef} style={dndKitColumnStyle} {...attributes}>
@@ -110,6 +125,7 @@ function Column({ column, createNewCard }) {
               anchorEl={anchorEl}
               open={open}
               onClose={handleClose}
+              onClick={handleClose}
               MenuListProps={{
                 'aria-labelledby': 'basic-column-dropdown'
               }}>
@@ -141,17 +157,35 @@ function Column({ column, createNewCard }) {
                 </Typography>
               </MenuItem>
               <Divider />
-              <MenuItem>
+              <MenuItem
+                onClick={toggleOpenNewCardForm}
+                sx= {{
+                  '&:hover' : {
+                    color: 'success.light',
+                    '& .add-icon' : {
+                      color: 'success.light'
+                    }
+                  }
+                }}>
                 <ListItemIcon>
-                  <PostAddIcon></PostAddIcon>
+                  <PostAddIcon className='add-icon'></PostAddIcon>
                 </ListItemIcon>
-                <ListItemText>Add this column</ListItemText>
+                <ListItemText>Add card</ListItemText>
               </MenuItem>
-              <MenuItem>
+              <MenuItem
+                onClick={handleDeleteColumn}
+                sx= {{
+                  '&:hover' : {
+                    color: 'warning.dark',
+                    '& .delete-icon' : {
+                      color: 'warning.dark'
+                    }
+                  }
+                }}>
                 <ListItemIcon>
-                  <DeleteIcon></DeleteIcon>
+                  <DeleteIcon className='delete-icon'></DeleteIcon>
                 </ListItemIcon>
-                <ListItemText>Remove this column</ListItemText>
+                <ListItemText>Delete this column</ListItemText>
               </MenuItem>
             </Menu>
           </Box>

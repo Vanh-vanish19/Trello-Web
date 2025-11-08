@@ -10,13 +10,15 @@ import {
   createNewCardApi,
   updateBoardDetailsAPI,
   updateColumnDetailsAPI,
-  moveCardToDifferentColumnAPI
+  moveCardToDifferentColumnAPI,
+  deleteColumnDetailAPI
 } from '~/apis'
 // import { mockData } from '../../apis/mock-data.js'
 import { genPlaceholderCard } from '~/utils/formatters'
 import { isEmpty } from 'lodash'
 import { mapOrder } from '~/utils/sorts'
 import { Box, Typography } from '@mui/material'
+import { toast } from 'react-toastify'
 function Board() {
   const [board, setBoard] = useState(null)
   useEffect(() => {
@@ -100,19 +102,24 @@ function Board() {
     setBoard(newBoard)
     //call api
     let prevCardOrderIds = dndOrderedColumns.find( c => c._id === prevColumnId)?.cardOrderIds
-    console.log('prevCardOrderIds :', prevCardOrderIds)
     if (prevCardOrderIds?.[0]?.includes('placeholder-card')) prevCardOrderIds = []
-    console.log('prevCardOrderIds :', prevCardOrderIds)
     let nextCardOrderIds = dndOrderedColumns.find( c => c._id === nextColumnId)?.cardOrderIds
-    console.log('nextCardOrderIds :', nextCardOrderIds)
     if (nextCardOrderIds?.[0]?.includes('placeholder-card')) nextCardOrderIds = []
-    console.log('nextCardOrderIds :', nextCardOrderIds)
     moveCardToDifferentColumnAPI({
       currentCardId,
       prevColumnId,
       prevCardOrderIds,
       nextColumnId,
       nextCardOrderIds
+    })
+  }
+  const deleteColumnDetail = (columnId) => {
+    const newBoard = { ...board }
+    newBoard.columns = newBoard.columns.filter( c => c._id !== columnId )
+    newBoard.columnOrderIds = newBoard.columnOrderIds.filter( _id => _id !== columnId )
+    setBoard(newBoard)
+    deleteColumnDetailAPI(columnId).then( (res) => {
+      toast.success(res.result)
     })
   }
 
@@ -145,6 +152,7 @@ function Board() {
         moveColumns = { moveColumns }
         moveCardInColumn = { moveCardInColumn }
         moveCardToDifferentColumn = { moveCardToDifferentColumn }
+        deleteColumnDetail = { deleteColumnDetail }
       />
     </Container>
   )
