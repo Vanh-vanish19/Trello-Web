@@ -48,7 +48,6 @@ function BoardContent({ board, createNewCol, createNewCard, moveColumns, moveCar
     const orderedColumns = board.columns
     setOrderedColumns(orderedColumns)
   }, [board])
-
   const moveCardBetweenColumns = (
     overColumn,
     overCardId,
@@ -60,40 +59,50 @@ function BoardContent({ board, createNewCol, createNewCard, moveColumns, moveCar
     triggerFrom
   ) => {
     setOrderedColumns( prevCols => {
+      // Tìm index cho card mới
       const overCardIdx = overColumn?.cards?.findIndex( c => c._id === overCardId)
-
       let newCardIdx
       const isBelowOverItem = active.rect.current.translated &&
-          active.rect.current.translated.top > over.rect.top + over.rect.height
+        active.rect.current.translated.top > over.rect.top + over.rect.height
       const modifier = isBelowOverItem ? 1 : 0
-
       newCardIdx = overCardIdx >= 0 ? overCardIdx + modifier : overColumn?.cards?.length + 1
 
+      // Clone state
       const nextCols = cloneDeep(prevCols)
       const nextActiveCol = nextCols.find( c => c._id === activeColumn._id)
       const nextOverCol = nextCols.find( c => c._id === overColumn._id)
 
+      // --- 1. XỬ LÝ  (Active Column) ---
       if ( nextActiveCol ) {
+        // 1.1. Xóa card đang kéo ra khỏi cột
         nextActiveCol.cards = nextActiveCol.cards.filter( c => c._id !== activeDraggingCardId)
-        if ( isEmpty( nextActiveCol.cards)) {
+
+        // 1.2. (FIX) Nếu cột rỗng, thêm placeholder
+        if (isEmpty(nextActiveCol.cards)) {
           nextActiveCol.cards = [genPlaceholderCard( nextActiveCol )]
         }
-        else {
-          nextActiveCol.cards = nextActiveCol.cards.filter ( c => c?._id !== genPlaceholderCard( nextActiveCol )._id )
-        }
-        //console.log('nextActiveCol.cards after remove :', nextActiveCol.cards)
+        // 1.3. Cập nhật mảng orderIds
         nextActiveCol.cardOrderIds = nextActiveCol.cards.map( c => c._id)
       }
 
+      // --- 2. XỬ LÝ CỘT (Over Column) ---
       if ( nextOverCol ) {
+        // 2.1. (FIX) Xóa placeholder card (nếu có) ra khỏi cột
+        const placeholderId = genPlaceholderCard(nextOverCol)._id
+        nextOverCol.cards = nextOverCol.cards.filter( c => c._id !== placeholderId)
+
+        // 2.2. Xóa card đang kéo (nếu nó vô tình còn sót)
         nextOverCol.cards = nextOverCol.cards.filter( c => c._id !== activeDraggingCardId)
+
+        // 2.3. Thêm card đang kéo vào cột "đến" tại vị trí mới
         nextOverCol.cards = nextOverCol.cards.toSpliced(newCardIdx, 0, activeDraggingCardData)
+        // 2.4. Cập nhật mảng orderIds
         nextOverCol.cardOrderIds = nextOverCol.cards.map( c => c._id)
       }
-      if (triggerFrom === 'handleDragOver') {
+
+      if (triggerFrom === 'handleDragEnd') {
         moveCardToDifferentColumn(activeDraggingCardId, oldColumnDraggingCard._id, nextOverCol._id, nextCols )
       }
-      //console.log('nextCols :', nextCols)
       return nextCols
     })
   }
@@ -147,6 +156,7 @@ function BoardContent({ board, createNewCol, createNewCard, moveColumns, moveCar
 
       const activeColumn = findColumnByCardId(activeDraggingCardId)
       const overColumn = findColumnByCardId(overCardId)
+      if (!over) return
       if (!activeColumn || !overColumn) return
 
       if ( oldColumnDraggingCard._id !== overColumn._id ) {
@@ -180,7 +190,6 @@ function BoardContent({ board, createNewCol, createNewCard, moveColumns, moveCar
         moveCardInColumn(dndOrderedCards, dndOrderedCardIds, oldColumnDraggingCard._id)
       }
     }
-    if (!over) return
     if ( activeDragItemType == ACTIVE_DRAG_ITEM_TYPE.COLUMN && active.id !== over.id ) {
       const oldColumnIndex = orderedColumns.findIndex( c => c._id === active.id)
       const newColumnIndex = orderedColumns.findIndex( c => c._id === over.id)

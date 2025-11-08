@@ -99,12 +99,20 @@ function Board() {
     newBoard.columnOrderIds = dndOrderedColumnsIds
     setBoard(newBoard)
     //call api
+    let prevCardOrderIds = dndOrderedColumns.find( c => c._id === prevColumnId)?.cardOrderIds
+    console.log('prevCardOrderIds :', prevCardOrderIds)
+    if (prevCardOrderIds?.[0]?.includes('placeholder-card')) prevCardOrderIds = []
+    console.log('prevCardOrderIds :', prevCardOrderIds)
+    let nextCardOrderIds = dndOrderedColumns.find( c => c._id === nextColumnId)?.cardOrderIds
+    console.log('nextCardOrderIds :', nextCardOrderIds)
+    if (nextCardOrderIds?.[0]?.includes('placeholder-card')) nextCardOrderIds = []
+    console.log('nextCardOrderIds :', nextCardOrderIds)
     moveCardToDifferentColumnAPI({
       currentCardId,
       prevColumnId,
-      prevCardOrderIds: dndOrderedColumns.find( c => c._id === prevColumnId).cardOrderIds,
+      prevCardOrderIds,
       nextColumnId,
-      nextCardOrderIds: dndOrderedColumns.find( c => c._id === nextColumnId).cardOrderIds
+      nextCardOrderIds
     })
   }
 
