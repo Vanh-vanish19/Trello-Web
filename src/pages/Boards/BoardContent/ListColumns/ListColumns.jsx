@@ -8,7 +8,7 @@ import CloseIcon from '@mui/icons-material/Close'
 import NoteAddIcon from '@mui/icons-material/NoteAdd'
 import { SortableContext, horizontalListSortingStrategy } from '@dnd-kit/sortable'
 
-function ListColumns({ columns, createNewCol, createNewCard }) {
+function ListColumns({ columns, createNewCol, createNewCard, deleteColumnDetail }) {
   const [openNewColForm, setOpenNewColForm] = useState(false)
   const [newColTitle, setNewColTitle] = useState('')
 
@@ -46,7 +46,7 @@ function ListColumns({ columns, createNewCol, createNewCard }) {
           overflowY: 'hidden'
         }}>
         { columns?.map((column) =>
-          ( <Column key={ column._id } column={column} createNewCard = {createNewCard}/> )
+          ( <Column key={ column._id } column={column} createNewCard = {createNewCard} deleteColumnDetail = {deleteColumnDetail}/> )
         )}
         { !openNewColForm
           ?<Box onClick={toggleOpenNewColForm}
