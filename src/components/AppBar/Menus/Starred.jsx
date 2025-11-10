@@ -33,6 +33,7 @@ function Starred() {
         Starred
       </Button>
       <Menu
+        disableScrollLock={true}
         id="basic-menu-starred"
         anchorEl={anchorEl}
         open={open}

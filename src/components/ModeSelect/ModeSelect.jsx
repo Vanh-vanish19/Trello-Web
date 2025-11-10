@@ -43,6 +43,9 @@ function ModeSelect() {
               color: 'white'
             }
           }}
+          MenuProps={{
+            disableScrollLock: true
+          }}
           labelId="mode-select-label"
           id="mode-select"
           value={mode}

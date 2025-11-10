@@ -23,9 +23,14 @@ import { useSortable } from '@dnd-kit/sortable'
 import { CSS } from '@dnd-kit/utilities'
 import { useState } from 'react'
 import { useConfirm } from 'material-ui-confirm'
+import { cloneDeep } from 'lodash'
+import { createNewCardApi } from '~/apis'
+import { useDispatch, useSelector } from 'react-redux'
+import { updateCurrentActiveBoard, selectCurrentActiveBoard } from '~/redux/activeBoard/activeBoardSlice'
+import { toast } from 'react-toastify'
+import { deleteColumnDetailAPI } from '~/apis'
 
-
-function Column({ column, createNewCard, deleteColumnDetail }) {
+function Column({ column }) {
   const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({
     id: column._id,
     data : { ...column }
@@ -51,6 +56,8 @@ function Column({ column, createNewCard, deleteColumnDetail }) {
 
   const [openNewCardForm, setOpenNewCardForm] = useState(false)
   const [newCardTitle, setNewCardTitle] = useState('')
+  const dispatch = useDispatch()
+  const board = useSelector(selectCurrentActiveBoard)
   const toggleOpenNewCardForm = () => {
     setOpenNewCardForm(!openNewCardForm)
   }
@@ -61,7 +68,20 @@ function Column({ column, createNewCard, deleteColumnDetail }) {
       title: newCardTitle,
       columnId: column._id
     }
-    await createNewCard(newCardData)
+    const createdCard = await createNewCardApi({
+      ...newCardData,
+      boardId: board._id
+    })
+    // console.log('createdCard :', createdCard)
+    // update state
+    const newBoard = cloneDeep(board)
+    const columnToUpdate = newBoard.columns.find( c => c._id === createdCard.columnId)
+    if (columnToUpdate) {
+      columnToUpdate.cards.push(createdCard)
+      columnToUpdate.cardOrderIds.push(createdCard._id)
+    }
+    // setBoard(newBoard)
+    dispatch(updateCurrentActiveBoard(newBoard))
 
     toggleOpenNewCardForm()
     setNewCardTitle('')
@@ -73,10 +93,18 @@ function Column({ column, createNewCard, deleteColumnDetail }) {
       content: 'This action will delete this column!! Are you sure?',
       confirmationText: 'Delete',
       cancellationText: 'Cancel',
-      confirmationButtonProps: { color: 'warning', autoFocus: true }
+      confirmationButtonProps: { color: 'warning', autoFocus: true },
+      disableScrollLock: true
     })
     if (confirmed) {
-      deleteColumnDetail(column._id)
+      const newBoard = { ...board }
+      newBoard.columns = newBoard.columns.filter( c => c._id !== column._id )
+      newBoard.columnOrderIds = newBoard.columnOrderIds.filter( _id => _id !== column._id )
+      // setBoard(newBoard)
+      dispatch(updateCurrentActiveBoard(newBoard))
+      deleteColumnDetailAPI(column._id).then( (res) => {
+        toast.success(res.result)
+      })
     }
   }
   return (
@@ -121,6 +149,7 @@ function Column({ column, createNewCard, deleteColumnDetail }) {
                 onClick={handleClick} />
             </Tooltip>
             <Menu
+              disableScrollLock={true}
               id="basic-menu-workspace"
               anchorEl={anchorEl}
               open={open}

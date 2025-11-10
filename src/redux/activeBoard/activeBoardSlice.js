@@ -31,28 +31,28 @@ export const activeBoardSlice = createSlice({
       // ...
       //update currentActiveBoard
       state.currentActiveBoard = board
-    },
-    // extraReducres xl bdb
-    extraReducers: (builder) => {
-      builder.addCase(fetchBoardDetailsAPI.fulfilled, (state, action) => {
-        // action.paylod : reponse.data
-        let board = action.payload
-        // xử lý data nếu cần
-        board.columns = mapOrder(board.columns, board.columnOrderIds, '_id')
-
-        board.columns.forEach( column => {
-          if (isEmpty(column.cards)) {
-            column.cards = [genPlaceholderCard(column)]
-            column.cardOrderIds = [genPlaceholderCard(column)._id]
-          }
-          else {
-            column.cards = mapOrder(column.cards, column.cardOrderIds, '_id')
-          }
-        })
-        //update currentActiveBoard
-        state.currentActiveBoard = board
-      })
     }
+  },
+  // extraReducres xl bdb
+  extraReducers: (builder) => {
+    builder.addCase(fetchBoardDetailsAPI.fulfilled, (state, action) => {
+      // action.paylod : reponse.data
+      let board = action.payload
+      // xử lý data nếu cần
+      board.columns = mapOrder(board.columns, board.columnOrderIds, '_id')
+
+      board.columns.forEach( column => {
+        if (isEmpty(column.cards)) {
+          column.cards = [genPlaceholderCard(column)]
+          column.cardOrderIds = [genPlaceholderCard(column)._id]
+        }
+        else {
+          column.cards = mapOrder(column.cards, column.cardOrderIds, '_id')
+        }
+      })
+      //update currentActiveBoard
+      state.currentActiveBoard = board
+    })
   }
 })
 

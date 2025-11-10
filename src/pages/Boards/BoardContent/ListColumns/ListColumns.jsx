@@ -7,11 +7,18 @@ import TextField from '@mui/material/TextField'
 import CloseIcon from '@mui/icons-material/Close'
 import NoteAddIcon from '@mui/icons-material/NoteAdd'
 import { SortableContext, horizontalListSortingStrategy } from '@dnd-kit/sortable'
+import { genPlaceholderCard } from '~/utils/formatters'
+import { cloneDeep } from 'lodash'
+import { createNewColumnApi } from '~/apis'
+import { useDispatch, useSelector } from 'react-redux'
+import { updateCurrentActiveBoard, selectCurrentActiveBoard } from '~/redux/activeBoard/activeBoardSlice'
 
-function ListColumns({ columns, createNewCol, createNewCard, deleteColumnDetail }) {
+
+function ListColumns({ columns }) {
   const [openNewColForm, setOpenNewColForm] = useState(false)
   const [newColTitle, setNewColTitle] = useState('')
-
+  const dispatch = useDispatch()
+  const board = useSelector(selectCurrentActiveBoard)
   const toggleOpenNewColForm = () => {
     setOpenNewColForm(!openNewColForm)
   }
@@ -25,7 +32,23 @@ function ListColumns({ columns, createNewCol, createNewCard, deleteColumnDetail 
     const newColData = {
       title: newColTitle
     }
-    await createNewCol(newColData)
+
+    //func call api to create col and reload stateBoard
+    const createdCol = await createNewColumnApi({
+      ...newColData,
+      boardId: board._id
+    })
+    // console.log('createdCol :', createdCol)
+    createdCol.cards = [genPlaceholderCard(createdCol)]
+    createdCol.cardOrderIds = [genPlaceholderCard(createdCol)._id]
+    // update state
+
+    // dùng spread operator (shallow copy) sau đó dùng push của js, liên quan đến rule của redux nên ko dùng được => deepclone
+    const newBoard = cloneDeep(board)
+    newBoard.columns.push(createdCol)
+    newBoard.columnOrderIds.push(createdCol._id)
+    // setBoard(newBoard)
+    dispatch(updateCurrentActiveBoard(newBoard))
 
     toggleOpenNewColForm()
     setNewColTitle('')
@@ -46,7 +69,7 @@ function ListColumns({ columns, createNewCol, createNewCard, deleteColumnDetail 
           overflowY: 'hidden'
         }}>
         { columns?.map((column) =>
-          ( <Column key={ column._id } column={column} createNewCard = {createNewCard} deleteColumnDetail = {deleteColumnDetail}/> )
+          ( <Column key={ column._id } column={column}/> )
         )}
         { !openNewColForm
           ?<Box onClick={toggleOpenNewColForm}
