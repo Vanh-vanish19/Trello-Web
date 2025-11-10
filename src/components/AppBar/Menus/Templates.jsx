@@ -33,6 +33,7 @@ function Templates() {
         Templates
       </Button>
       <Menu
+        disableScrollLock={true}
         id="basic-menu-templates"
         anchorEl={anchorEl}
         open={open}

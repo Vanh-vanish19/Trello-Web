@@ -14,8 +14,12 @@ ReactDOM.createRoot(document.getElementById('root')).render(
   <Provider store={store}>
     <CssVarsProvider theme={theme}>
       <ConfirmProvider defaultOptions={{
+        disableScrollLock: true,
         allowClose: true,
-        dialogProps: { maxWidth: 'xs' },
+        dialogProps: {
+          maxWidth: 'xs',
+          disableScrollLock: true
+        },
         buttonOrder: ['confirm', 'cancel']
       }}>
         <CssBaseline />

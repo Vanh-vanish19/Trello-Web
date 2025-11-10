@@ -60,8 +60,8 @@ const theme = extendTheme({
       styleOverrides: {
         body: {
           '*::-webkit-scrollbar': {
-            width: '6px',
-            height: '3px'
+            width: '8px',
+            height: '8px'
           },
           '*::-webkit-scrollbar-thumb': {
             backgroundColor: '#c8d6daff',

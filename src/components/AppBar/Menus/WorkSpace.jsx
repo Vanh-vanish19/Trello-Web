@@ -35,6 +35,7 @@ function WorkSpace() {
         WorkSpace
       </Button>
       <Menu
+        disableScrollLock={true}
         id="basic-menu-workspace"
         anchorEl={anchorEl}
         open={open}

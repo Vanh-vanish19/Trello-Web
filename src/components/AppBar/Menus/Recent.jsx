@@ -33,6 +33,7 @@ function Recent() {
         Recent
       </Button>
       <Menu
+        disableScrollLock={true}
         id="basic-menu-recent"
         anchorEl={anchorEl}
         open={open}
