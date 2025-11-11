@@ -1,9 +1,22 @@
+import { Routes, Route, Navigate } from 'react-router-dom'
 import Board from './pages/Boards/_id'
+import NotFound from './pages/404/NotFound'
+import Auth from './pages/Auth/Auth'
 function App() {
   return (
-    <>
-      <Board />
-    </>
+    <Routes>
+      <Route path='/' element={
+        /* Replace = true thay thế cho router '/' để đúng luồng */
+        <Navigate to='/boards/6909c9dd5ca852601ed8d268' replace ={true}/> }>
+      </Route>
+      <Route path='/boards/:boardId' element={<Board/>}></Route>
+
+      <Route path='/login' element={<Auth/>}></Route>
+
+      <Route path='/register' element={<Auth/>}></Route>
+
+      <Route path='*' element={<NotFound/>}></Route>
+    </Routes>
   )
 }
 
