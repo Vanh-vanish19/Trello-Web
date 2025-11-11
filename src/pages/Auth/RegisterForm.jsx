@@ -103,6 +103,7 @@ function RegisterForm() {
               <FieldErrorAlert errors = {errors} fieldName = {'password_confirmation'}/>
             </Stack>
             <Button
+              className='interceptor-loading'
               type="submit"
               variant="contained"
               color="primary"

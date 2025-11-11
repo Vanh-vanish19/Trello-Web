@@ -128,6 +128,7 @@ function ListColumns({ columns }) {
             />
             <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
               <Button
+                className='interceptor-loading'
                 onClick={addNewCol}
                 variant="contained"
                 color="success"
@@ -139,7 +140,7 @@ function ListColumns({ columns }) {
                 }}
               >
                 Add Column
-              </Button>
+              </Button >
               <CloseIcon
                 fontSize="small"
                 sx={{

@@ -111,6 +111,7 @@ function LoginForm() {
             </Stack>
 
             <Button
+              className='interceptor-loading'
               type="submit"
               variant="contained"
               color="primary"
