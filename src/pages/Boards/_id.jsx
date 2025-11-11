@@ -10,15 +10,16 @@ import { cloneDeep } from 'lodash'
 import { Box, Typography } from '@mui/material'
 import { fetchBoardDetailsAPI, updateCurrentActiveBoard, selectCurrentActiveBoard } from '~/redux/activeBoard/activeBoardSlice'
 import { useDispatch, useSelector } from 'react-redux'
-
+import { useParams } from 'react-router-dom'
 function Board() {
   // const [board, setBoard] = useState(null)
   const dispatch = useDispatch()
   const board = useSelector(selectCurrentActiveBoard)
+  const { boardId } = useParams()
   useEffect(() => {
-    const boardId = '6909c9dd5ca852601ed8d268'
+    // const boardId = '6909c9dd5ca852601ed8d268'
     dispatch(fetchBoardDetailsAPI(boardId))
-  }, [dispatch])
+  }, [dispatch, boardId])
 
   const moveColumns = (dndOrderedColumns) => {
     const dndOrderedColumnsIds = dndOrderedColumns.map( c => c._id )
