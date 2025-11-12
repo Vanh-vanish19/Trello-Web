@@ -1,4 +1,4 @@
-import { Link } from 'react-router-dom'
+import { Link, useSearchParams } from 'react-router-dom'
 import Box from '@mui/material/Box'
 import Button from '@mui/material/Button'
 import Avatar from '@mui/material/Avatar'
@@ -15,6 +15,9 @@ import FieldErrorAlert from '~/components/Form/FieldErrorAlert'
 
 function LoginForm() {
   const { register, handleSubmit, formState: { errors } } = useForm()
+  let [searchParams] = useSearchParams()
+  const registeredEmail = searchParams.get('registeredEmail')
+  const verifiedEmail = searchParams.get('verifiedEmail')
 
   const submitLogin = (data) => {
     // eslint-disable-next-line no-console
@@ -52,11 +55,13 @@ function LoginForm() {
 
             <Box sx={{ width: '100%', mt: 1, mb: 1 }}>
               <Stack spacing={1}>
+                { verifiedEmail &&
                 <Alert severity="success" sx={{ '.MuiAlert-message': { overflow: 'hidden' } }}>
-                  Your email&nbsp;
-                  <Typography variant="span" sx={{ fontWeight: 'bold', '&:hover': { color: '#fdba26' } }}>nvietanh1904.work@gmail.com</Typography>
-                  &nbsp;has been verified.
-                </Alert>
+                    Your email&nbsp;
+                  <Typography variant="span" sx={{ fontWeight: 'bold', '&:hover': { color: '#fdba26' } }}>{verifiedEmail}</Typography>
+                &nbsp;has been verified.
+                </Alert>}
+                { registeredEmail &&
                 <Alert severity="info">
                   <Box sx={{
                     whiteSpace: 'nowrap',
@@ -65,11 +70,11 @@ function LoginForm() {
                   }}>
                     An email has been sent to&nbsp;
                     <Typography variant="span" sx={{ fontWeight: 'bold', '&:hover': { color: '#fdba26' } }}>
-                      nvietanh1904.work@gmail.com
+                      {registeredEmail}
                     </Typography>
                   </Box>
                   Please check and verify!
-                </Alert>
+                </Alert>}
               </Stack>
             </Box>
             <Stack spacing={2} sx={{ width: '100%', mt: 1 }}>
