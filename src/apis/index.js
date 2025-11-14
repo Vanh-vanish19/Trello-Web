@@ -47,3 +47,8 @@ export const verifyUserAPI = async (data) => {
   toast.success('Account verified successfully! Now you can login to Trello.')
   return response.data
 }
+
+export const refreshTokenAPI = async () => {
+  const response = await authorizeAxiosInstance.get(`${API_ROOT}/v1/users/refresh_token`)
+  return response.data
+}
