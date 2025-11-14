@@ -30,12 +30,15 @@ function Profiles() {
 
   const handleLogout = async() => {
     try {
-      await confirm({
-        title: 'Log out of your account ?',
+      const { confirmed } = await confirm({
+        title: 'Log out !!',
+        description: 'Are you sure you want to log out?',
         confirmationText: 'Yes',
         cancellationText: 'No'
       })
-      dispatch(logoutUserAPI())
+      if (confirmed) {
+        dispatch(logoutUserAPI())
+      }
     } catch {
       () => {}
     }
@@ -59,7 +62,6 @@ function Profiles() {
         anchorEl={anchorEl}
         id="account-menu"
         open={open}
-        onClose={handleClose}
         onClick={handleClose}
         PaperProps={{
           elevation: 0,
