@@ -24,7 +24,6 @@ const theme = extendTheme({
           styleOverrides: {
             root: {
               textTransform: 'none',
-              color: '#1273f3ff',
               borderColor: '#1273f3ff'
             }
           }
@@ -40,7 +39,6 @@ const theme = extendTheme({
           styleOverrides: {
             root: {
               textTransform: 'none',
-              color: '#fff',
               borderColor: '#fff'
             }
           }
