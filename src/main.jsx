@@ -13,6 +13,9 @@ import { BrowserRouter } from 'react-router-dom'
 import { PersistGate } from 'redux-persist/integration/react'
 import { persistStore } from 'redux-persist'
 
+// injectStore
+import { injectStore } from '~/utils/authorizeAxios'
+injectStore(store)
 
 const persistor = persistStore(store)
 

@@ -20,6 +20,7 @@ import HelpOutlineIcon from '@mui/icons-material/HelpOutline'
 import Profiles from './Menus/Profiles'
 import CreateIcon from '@mui/icons-material/Create'
 import CloseIcon from '@mui/icons-material/Close'
+import { Link } from 'react-router-dom'
 
 const Search = styled('div')(({ theme }) => ({
   position: 'relative',
@@ -89,14 +90,17 @@ function AppBar() {
       justifyContent: 'space-between',
       gap: 2,
       overflowX: 'auto',
-      bgcolor: (theme) => { theme.palette.mode === 'dark' ? '#2c3e50' : '#1565c0' }
+      bgcolor: (theme) => ( theme.palette.mode === 'dark' ? '#2c3e50' : '#1565c0' )
     }}>
       <Box sx={{ color : 'white', display: 'flex', alignItems: 'center', gap : 2 }}>
-        <AppsIcon />
-        <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-          <SvgIcon component={trelloIcon} inheritViewBox />
-          <Typography variant='span' sx={{ fontSize: 20, fontWeight: 'bold', gap : 1 }}>Trello</Typography>
-        </Box>
+        <Link to = "/" style ={{ display: 'flex', alignItems: 'center', gap: '16px', color : 'inherit', textDecoration : 'none' }}>
+          <AppsIcon />
+          <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+            <SvgIcon component={trelloIcon} inheritViewBox />
+            <Typography variant='span' sx={{ fontSize: 20, fontWeight: 'bold', gap : 1 }}>Trello</Typography>
+          </Box>
+        </Link>
+
         <Box sx={{ display: { xs: 'none', md: 'flex' }, gap: 2 }}>
           <WorkSpace />
           <Recent />
