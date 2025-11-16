@@ -18,14 +18,13 @@ import { toast } from 'react-toastify'
 function RegisterForm() {
   const { register, handleSubmit, formState: { errors }, watch } = useForm()
   const navigate = useNavigate()
-  const submitRegister = (data) => {
+  const submitRegister = async (data) => {
     const { email, password } = data
-    toast.promise(
+    const user= await toast.promise(
       registerUserAPI({ email, password }),
       { pending: 'Registering...' }
-    ).then(user => {
-      navigate(`/login?registeredEmail=${user.email}`)
-    })
+    )
+    navigate(`/login?registeredEmail=${user.email}`)
   }
   return (
     <Box

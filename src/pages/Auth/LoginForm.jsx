@@ -26,15 +26,13 @@ function LoginForm() {
   const registeredEmail = searchParams.get('registeredEmail')
   const verifiedEmail = searchParams.get('verifiedEmail')
 
-  const submitLogin = (data) => {
+  const submitLogin = async (data) => {
     const { email, password } = data
-    toast.promise(
+    const res = await toast.promise(
       dispatch(loginUserAPI({ email, password })),
       { pending: 'Logging inn...' }
-    ).then(res => {
-      // console.log(res)
-      if (!res.error) navigate('/')
-    })
+    )
+    if (!res.error) navigate('/')
   }
   return (
     <Box

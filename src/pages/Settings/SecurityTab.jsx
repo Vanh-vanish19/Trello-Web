@@ -1,41 +1,61 @@
+import { useState } from 'react'
 import Box from '@mui/material/Box'
 import Typography from '@mui/material/Typography'
 import TextField from '@mui/material/TextField'
 import InputAdornment from '@mui/material/InputAdornment'
 import Button from '@mui/material/Button'
+import IconButton from '@mui/material/IconButton'
 import PasswordIcon from '@mui/icons-material/Password'
 import LockResetIcon from '@mui/icons-material/LockReset'
 import LockIcon from '@mui/icons-material/Lock'
 import LogoutIcon from '@mui/icons-material/Logout'
+import Visibility from '@mui/icons-material/Visibility'
+import VisibilityOff from '@mui/icons-material/VisibilityOff'
 
 import { FIELD_REQUIRED_MESSAGE, PASSWORD_RULE, PASSWORD_RULE_MESSAGE } from '~/utils/validators'
 import FieldErrorAlert from '~/components/Form/FieldErrorAlert'
 import { useForm } from 'react-hook-form'
 import { useConfirm } from 'material-ui-confirm'
+import { useDispatch } from 'react-redux'
+import { updateUserAPI, logoutUserAPI } from '~/redux/user/userSlice'
 import { toast } from 'react-toastify'
 
 function SecurityTab() {
   const { register, handleSubmit, watch, formState: { errors } } = useForm()
 
-  // Ôn lại: https://www.npmjs.com/package/material-ui-confirm
+  const dispatch = useDispatch()
+
+  const [showNewPassword, setShowNewPassword] = useState(false)
+  const [showNewPasswordConfirmation, setShowNewPasswordConfirmation] = useState(false)
+
+  const handleClickShowNewPassword = () => setShowNewPassword((show) => !show)
+  const handleClickShowNewPasswordConfirmation = () => setShowNewPasswordConfirmation((show) => !show)
+
+  const handleMouseDownPassword = (event) => {
+    event.preventDefault()
+  }
+
   const confirmChangePassword = useConfirm()
-  const submitChangePassword = (data) => {
-    confirmChangePassword({
-      // Title, Description, Content...vv của gói material-ui-confirm đều có type là ReactNode nên có thể thoải sử dụng MUI components, rất tiện lợi khi cần custom styles
+  const submitChangePassword = async (data) => {
+    const { confirmed } = await confirmChangePassword({
       title: <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
         <LogoutIcon sx={{ color: 'warning.dark' }} /> Change Password
       </Box>,
       description: 'You have to login again after successfully changing your password. Continue?',
       confirmationText: 'Confirm',
       cancellationText: 'Cancel'
-    }).then(() => {
-      const { current_password, new_password, new_password_confirmation } = data
-      console.log('current_password: ', current_password)
-      console.log('new_password: ', new_password)
-      console.log('new_password_confirmation: ', new_password_confirmation)
-
-      // Gọi API...
-    }).catch(() => {})
+    })
+    const { current_password, new_password } = data
+    if (confirmed) {
+      const res = await toast.promise(
+        dispatch(updateUserAPI({ current_password, new_password })),
+        { pending: 'Updating...' }
+      )
+      if (!res.error) {
+        toast.success('Changed your password successfully! please login again.')
+        dispatch(logoutUserAPI(false))
+      }
+    }
   }
 
   return (
@@ -88,12 +108,24 @@ function SecurityTab() {
               <TextField
                 fullWidth
                 label="New Password"
-                type="password"
+                type={showNewPassword ? 'text' : 'password'}
                 variant="outlined"
                 InputProps={{
                   startAdornment: (
                     <InputAdornment position="start">
                       <LockIcon fontSize="small" />
+                    </InputAdornment>
+                  ),
+                  endAdornment: (
+                    <InputAdornment position="end">
+                      <IconButton
+                        aria-label="toggle new password visibility"
+                        onClick={handleClickShowNewPassword}
+                        onMouseDown={handleMouseDownPassword}
+                        edge="end"
+                      >
+                        {showNewPassword ? <VisibilityOff /> : <Visibility />}
+                      </IconButton>
                     </InputAdornment>
                   )
                 }}
@@ -113,12 +145,24 @@ function SecurityTab() {
               <TextField
                 fullWidth
                 label="New Password Confirmation"
-                type="password"
+                type={showNewPasswordConfirmation ? 'text' : 'password'}
                 variant="outlined"
                 InputProps={{
                   startAdornment: (
                     <InputAdornment position="start">
                       <LockResetIcon fontSize="small" />
+                    </InputAdornment>
+                  ),
+                  endAdornment: (
+                    <InputAdornment position="end">
+                      <IconButton
+                        aria-label="toggle new password confirmation visibility"
+                        onClick={handleClickShowNewPasswordConfirmation}
+                        onMouseDown={handleMouseDownPassword}
+                        edge="end"
+                      >
+                        {showNewPasswordConfirmation ? <VisibilityOff /> : <Visibility />}
+                      </IconButton>
                     </InputAdornment>
                   )
                 }}

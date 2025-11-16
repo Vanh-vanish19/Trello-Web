@@ -13,8 +13,8 @@ import AssignmentIndIcon from '@mui/icons-material/AssignmentInd'
 
 import { FIELD_REQUIRED_MESSAGE, singleFileValidator } from '~/utils/validators'
 import FieldErrorAlert from '~/components/Form/FieldErrorAlert'
-import { useSelector } from 'react-redux'
-import { selectCurrentUser } from '~/redux/user/userSlice'
+import { useSelector, useDispatch } from 'react-redux'
+import { selectCurrentUser, updateUserAPI } from '~/redux/user/userSlice'
 import { useForm } from 'react-hook-form'
 import { toast } from 'react-toastify'
 
@@ -32,6 +32,7 @@ const VisuallyHiddenInput = styled('input')({
 
 function AccountTab() {
   const currentUser = useSelector(selectCurrentUser)
+  const dispatch = useDispatch()
 
   // Những thông tin của user để init vào form (key tương ứng với register phía dưới Field)
   const initialGeneralForm = {
@@ -42,14 +43,18 @@ function AccountTab() {
     defaultValues: initialGeneralForm
   })
 
-  const submitChangeGeneralInformation = (data) => {
+  const submitChangeGeneralInformation = async (data) => {
     const { displayName } = data
-    console.log('displayName: ', displayName)
-
     // Nếu không có sự thay đổi gì về displayname thì không làm gì cả
     if (displayName === currentUser?.displayName) return
-
     // Gọi API...
+    const res = await toast.promise(
+      dispatch(updateUserAPI({ displayName })),
+      { pending: 'Updating...' }
+    )
+    if (!res.error) {
+      toast.success('Update successfully!')
+    }
   }
 
   const uploadAvatar = (e) => {
@@ -109,7 +114,7 @@ function AccountTab() {
           </Box>
           <Box>
             <Typography variant="h6">{currentUser?.displayName}</Typography>
-            <Typography sx={{ color: 'grey' }}>@{currentUser?.username}</Typography>
+            <Typography sx={{ color: 'grey' }}>@{currentUser?.userName}</Typography>
           </Box>
         </Box>
 
@@ -136,7 +141,7 @@ function AccountTab() {
             <Box>
               <TextField
                 disabled
-                defaultValue={currentUser?.username}
+                defaultValue={currentUser?.userName}
                 fullWidth
                 label="Your Username"
                 type="text"

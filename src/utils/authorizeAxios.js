@@ -1,9 +1,7 @@
 import axios from 'axios'
 import { toast } from 'react-toastify'
 import { interceptorLoadingElements } from '~/utils/formatters'
-import { refreshTokenAPI} from '~/apis'
-import { useSelector } from 'react-redux'
-import { selectCurrentUser } from '~/redux/user/userSlice'
+import { refreshTokenAPI } from '~/apis'
 import { logoutUserAPI } from '~/redux/user/userSlice'
 
 let axiosReduxStore
@@ -41,7 +39,6 @@ authorizeAxiosInstance.interceptors.response.use( (response) => {
   }
   // 410 => call api refreshToken
   const originalRequests = error.config
-  console.log('originnalRequests', originalRequests)
 
   if (error.response?.status === 410 && !originalRequests._retry) {
     originalRequests._retry = true
