@@ -66,6 +66,9 @@ function LoginForm() {
 
             <Box sx={{ width: '100%', mt: 1, mb: 1 }}>
               <Stack spacing={1}>
+                <Alert severity="info" sx={{ display: 'flex', alignItems: 'center' }}>
+                  Beta Version: System is under active development.
+                </Alert>
                 { verifiedEmail &&
                 <Alert severity="success" sx={{ '.MuiAlert-message': { overflow: 'hidden' } }}>
                     Your email&nbsp;
