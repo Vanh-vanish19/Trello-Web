@@ -32,14 +32,24 @@ const theme = extendTheme({
     },
     dark: {
       palette: {
-        primary: { main: '#1a1747ff' }
+        primary: { main: '#90caf9' },
+        secondary: { main: '#b0bec5' },
+        background: {
+          default: '#0a1929',
+          paper: '#1a2027'
+        },
+        text: {
+          primary: '#fff',
+          secondary: '#b0bec5'
+        }
       },
       components: {
         MuiButton: {
           styleOverrides: {
             root: {
               textTransform: 'none',
-              borderColor: '#fff'
+              color: 'white',
+              borderColor: 'white'
             }
           }
         }
@@ -50,7 +60,8 @@ const theme = extendTheme({
     MuiButton: {
       styleOverrides: {
         root: {
-          borderWidth: '0.5px'
+          borderWidth: '0.5px',
+          '&:hover': { borderWidth: '1px' }
         }
       }
     },
@@ -62,11 +73,19 @@ const theme = extendTheme({
             height: '8px'
           },
           '*::-webkit-scrollbar-thumb': {
-            backgroundColor: '#c8d6daff',
+            backgroundColor: '#dcdde1',
             borderRadius: '8px'
           },
           '*::-webkit-scrollbar-thumb:hover': {
-            backgroundColor: '#7f8c8d'
+            backgroundColor: 'white'
+          },
+          '[data-mui-color-scheme="dark"] &': {
+            '*::-webkit-scrollbar-thumb': {
+              backgroundColor: '#4f5b62'
+            },
+            '*::-webkit-scrollbar-thumb:hover': {
+              backgroundColor: '#90caf9'
+            }
           }
         }
       }
