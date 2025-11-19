@@ -19,7 +19,7 @@ function App() {
     <Routes>
       <Route path='/' element={
         /* Replace = true thay thế cho router '/' để đúng luồng */
-        <Navigate to='/boards/6909c9dd5ca852601ed8d268' replace ={true}/> }>
+        <Navigate to='/boards' replace ={true}/> }>
       </Route>
       <Route element={<ProtectedRoutes user={ currentUser }/>}>
         <Route path='/boards/:boardId' element={<Board/>}/>
