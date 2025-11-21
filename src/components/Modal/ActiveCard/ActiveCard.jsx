@@ -32,7 +32,10 @@ import { toast } from 'react-toastify'
 import CardUserGroup from './CardUserGroup'
 import CardDescriptionMdEditor from './CardDescriptionMdEditor'
 import CardActivitySection from './CardActivitySection'
-
+import { useDispatch, useSelector } from 'react-redux'
+import { updateCurrentActiveCard, selectCurrentActiveCard } from '~/redux/activeCard/activeCardSlice'
+import { updateCardDetailsAPI } from '~/apis'
+import { updateCardInBoard } from '~/redux/activeBoard/activeBoardSlice'
 
 import { styled } from '@mui/material/styles'
 const SidebarItem = styled(Box)(({ theme }) => ({
@@ -59,15 +62,25 @@ const SidebarItem = styled(Box)(({ theme }) => ({
  * Note: Modal là một low-component mà bọn MUI sử dụng bên trong những thứ như Dialog, Drawer, Menu, Popover. Ở đây dĩ nhiên chúng ta có thể sử dụng Dialog cũng không thành vấn đề gì, nhưng sẽ sử dụng Modal để dễ linh hoạt tùy biến giao diện từ con số 0 cho phù hợp với mọi nhu cầu nhé.
  */
 function ActiveCard() {
-  const [isOpen, setIsOpen] = useState(true)
-  const handleOpenModal = () => setIsOpen(true)
+  // lưu vào redux rồi và dùng biến activeCard bên _id.jsx nên k dùng
+  // const [isOpen, setIsOpen] = useState(true)
+  // const handleOpenModal = () => setIsOpen(true)
+  const dispatch = useDispatch()
+  const activeCard = useSelector(selectCurrentActiveCard)
   const handleCloseModal = () => {
-    setIsOpen(false)
+    // setIsOpen(false)
+    dispatch(updateCurrentActiveCard(null))
+  }
+  // func dùng chung
+  const callApiToUpdateCard = async(updateData) => {
+    const updateCard = await updateCardDetailsAPI(activeCard._id, updateData)
+    dispatch(updateCurrentActiveCard(updateCard))
+    dispatch(updateCardInBoard(updateCard))
+    return updateCard
   }
 
   const onUpdateCardTitle = (newTitle) => {
-    console.log(newTitle.trim())
-    // Gọi API...
+    callApiToUpdateCard({ title: newTitle.trim() })
   }
 
   const onUploadCardCover = (event) => {
@@ -86,7 +99,7 @@ function ActiveCard() {
   return (
     <Modal
       disableScrollLock
-      open={isOpen}
+      open={true}
       onClose={handleCloseModal} // Sử dụng onClose trong trường hợp muốn đóng Modal bằng nút ESC hoặc click ra ngoài Modal
       sx={{ overflowY: 'auto' }}>
       <Box sx={{
@@ -110,22 +123,22 @@ function ActiveCard() {
         }}>
           <CancelIcon color="error" sx={{ '&:hover': { color: 'error.light' } }} onClick={handleCloseModal} />
         </Box>
-
+        {activeCard?.cover &&
         <Box sx={{ mb: 4 }}>
           <img
             style={{ width: '100%', height: '320px', borderRadius: '6px', objectFit: 'cover' }}
-            src="https://res.cloudinary.com/vanishh/image/upload/v1763734532/phu-quoc-island-sunrise-vietnam-purple-sky-scenery-wooden-3840x2160-5471_hmdotw.jpg"
+            src= {activeCard?.cover}
             alt="card-cover"
           />
         </Box>
-
+        }
         <Box sx={{ mb: 1, mt: -3, pr: 2.5, display: 'flex', alignItems: 'center', gap: 1 }}>
           <CreditCardIcon />
 
           {/* Feature 01: Xử lý tiêu đề của Card */}
           <ToggleFocusInput
             inputFontSize='22px'
-            value={'card?.title'}
+            value={activeCard?.title}
             onChangedValue={onUpdateCardTitle} />
         </Box>
 

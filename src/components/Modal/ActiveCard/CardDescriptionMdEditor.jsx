@@ -10,7 +10,7 @@ const markdownValueExample = `
   *\`Markdown Content Example:\`*
 
   **Hello world Trello MERN Stack**
-  [![](https://res.cloudinary.com/vanishh/image/upload/v1763734517/hinh-nen-viet-nam-4k_024250712_layxpx.jpg)
+  ![]()
   \`\`\`javascript
   import React from "react"
   import ReactDOM from "react-dom"
