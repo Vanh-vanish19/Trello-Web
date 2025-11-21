@@ -5,12 +5,11 @@ import VpnLockIcon from '@mui/icons-material/VpnLock'
 import AddToDriveIcon from '@mui/icons-material/AddToDrive'
 import BoltIcon from '@mui/icons-material/Bolt'
 import FilterListIcon from '@mui/icons-material/FilterList'
-import Avatar from '@mui/material/Avatar'
-import AvatarGroup from '@mui/material/AvatarGroup'
 import ToolTip from '@mui/material/Tooltip'
 import Button from '@mui/material/Button'
 import AddIcon from '@mui/icons-material/Add'
-import { capitalizeFirstLetter } from '../../../utils/formatters'
+import { capitalizeFirstLetter } from '~/utils/formatters'
+import BoardUserGroup from './BoardUserGroup'
 
 const Menu_Styles = {
   color:'white',
@@ -93,34 +92,7 @@ function BoardBar({ board }) {
           variant='outlined'
           startIcon={<AddIcon/>
           }>Invite</Button>
-        <AvatarGroup
-          max={4}
-          sx={{
-            '& .MuiAvatar-root': {
-              width: 32,
-              height: 32,
-              fontSize: 16,
-              cursor: 'pointer',
-              '&:first-of-type': { bgcolor:'#a4b0be' }
-            }
-          }}
-        >
-          <ToolTip title="Vanish">
-            <Avatar alt="Vanish" src="" />
-          </ToolTip>
-          <ToolTip title="Goku">
-            <Avatar alt="Goku" src="https://tse3.mm.bing.net/th/id/OIP.GRg94jpgShjt_WoH4OdaaQHaHa?cb=12&rs=1&pid=ImgDetMain&o=7&rm=3" />
-          </ToolTip>
-          <ToolTip title="Gojo">
-            <Avatar alt="Gojo" src="https://tse1.mm.bing.net/th/id/OIP.QQT-0tYqyjJrBA1paJ1GwQHaEK?cb=12&rs=1&pid=ImgDetMain&o=7&rm=3" />
-          </ToolTip>
-          <ToolTip title="Vanish">
-            <Avatar alt="Vanish" src="" />
-          </ToolTip>
-          <ToolTip title="Vanish">
-            <Avatar alt="Vanish" src="" />
-          </ToolTip>
-        </AvatarGroup>
+        <BoardUserGroup/>
       </Box>
     </Box>
   )
