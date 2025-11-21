@@ -11,12 +11,14 @@ import { useDispatch, useSelector } from 'react-redux'
 import { useParams } from 'react-router-dom'
 import PageLoadingSpinner from '~/components/Loading/PageLoadingSpinner.jsx'
 import ActiveCard from '~/components/Modal/ActiveCard/ActiveCard.jsx'
+import { selectCurrentActiveCard } from '~/redux/activeCard/activeCardSlice.js'
 
 function Board() {
   // const [board, setBoard] = useState(null)
   const dispatch = useDispatch()
   const board = useSelector(selectCurrentActiveBoard)
   const { boardId } = useParams()
+  const activeCard = useSelector(selectCurrentActiveCard)
   useEffect(() => {
     // const boardId = '6909c9dd5ca852601ed8d268'
     dispatch(fetchBoardDetailsAPI(boardId))
@@ -78,7 +80,7 @@ function Board() {
         backgroundColor : 'primary.main'
       }}>
       {/*Modal activecard, check đóng mở dựa theo điều kiện nó có tồn tại data activeCard lưu trong redux hay không thì mới render, tại 1 thời điểm thì chỉ tồn tại 1 modal card đang active  */}
-      <ActiveCard/>
+      { activeCard && <ActiveCard /> }
 
       <AppBar />
       <BoardBar board = { board }/>
