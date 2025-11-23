@@ -24,7 +24,8 @@ function AccountVerification() {
   if (!email || !token) {
     return <Navigate to= '/404'/>
   }
-  if (!verified) {
+
+  if (verified) {
     return <PageLoadingSpinner captions= 'Verifying your account...'></PageLoadingSpinner>
   }
 
