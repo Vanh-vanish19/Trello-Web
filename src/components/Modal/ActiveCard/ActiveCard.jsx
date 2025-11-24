@@ -83,8 +83,10 @@ function ActiveCard() {
     callApiToUpdateCard({ title: newTitle.trim() })
   }
 
-  const onUploadCardCover = (event) => {
-    console.log(event.target?.files[0])
+  const onUpdateCardDescription = (newDescription) => {
+    callApiToUpdateCard({ description: newDescription })
+  }
+  const onUploadCardCover = async (event) => {
     const error = singleFileValidator(event.target?.files[0])
     if (error) {
       toast.error(error)
@@ -94,6 +96,14 @@ function ActiveCard() {
     reqData.append('cardCover', event.target?.files[0])
 
     // Gọi API...
+    const res = await toast.promise(
+      callApiToUpdateCard( reqData ),
+      { pending: 'Updating...' }
+    )
+    if (!res.error) {
+      toast.success('Update successfully!')
+    }
+    event.target.value=''
   }
 
   return (
@@ -155,11 +165,14 @@ function ActiveCard() {
             <Box sx={{ mb: 3 }}>
               <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5 }}>
                 <SubjectRoundedIcon />
-                <Typography variant="span" sx={{ fontWeight: '600', fontSize: '20px' }}>  </Typography>
+                <Typography variant="span" sx={{ fontWeight: '600', fontSize: '20px' }}>Description</Typography>
               </Box>
 
               {/* Feature 03: Xử lý mô tả của Card */}
-              <CardDescriptionMdEditor />
+              <CardDescriptionMdEditor
+                cardDescriptionProp={activeCard?.description}
+                handleUpdateCardDescription={onUpdateCardDescription}
+              />
             </Box>
 
             <Box sx={{ mb: 3 }}>

@@ -53,6 +53,10 @@ export const activeBoardSlice = createSlice({
     builder.addCase(fetchBoardDetailsAPI.fulfilled, (state, action) => {
       // action.payload : reponse.data
       let board = action.payload
+
+      // thành viên trong board gộp lại của 2 mảng onwer vs member
+      board.FE_allUsers = board.owners.concat(board.members)
+
       // xử lý data nếu cần
       board.columns = mapOrder(board.columns, board.columnOrderIds, '_id')
 
