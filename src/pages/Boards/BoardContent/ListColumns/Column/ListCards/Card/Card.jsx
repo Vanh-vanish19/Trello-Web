@@ -10,12 +10,13 @@ import Typography from '@mui/material/Typography'
 import { useSortable } from '@dnd-kit/sortable'
 import { CSS } from '@dnd-kit/utilities'
 import { useDispatch } from 'react-redux'
-import { updateCurrentActiveCard } from '~/redux/activeCard/activeCardSlice'
+import { updateCurrentActiveCard, showModalActiveCard } from '~/redux/activeCard/activeCardSlice'
 
 function TrelloCard({ card }) {
   const dispatch = useDispatch()
   const setActiveCard = () => {
     dispatch(updateCurrentActiveCard(card))
+    dispatch(showModalActiveCard())
   }
   const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({
     id: card._id,
@@ -33,6 +34,7 @@ function TrelloCard({ card }) {
   const shouldShowCardAction = () => {
     return !!card?.memberIds?.length || !!card?.comments?.length || !!card?.attachments?.length
   }
+
   return (
     <Card
       onClick= {setActiveCard}
