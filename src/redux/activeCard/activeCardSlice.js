@@ -1,6 +1,7 @@
 import { createSlice } from '@reduxjs/toolkit'
 const initialState = {
-  currentActiveCard: null
+  currentActiveCard: null,
+  isShowModalActiveCard: false
 }
 
 // init Slice in redux store
@@ -9,8 +10,13 @@ export const activeCardSlice = createSlice({
   initialState,
   // reducers xử lý đồng bộ
   reducers: {
-    clearCurrentActiveCard: (state) => {
-      state.currentActiveCard = null
+    showModalActiveCard : (state) => {
+      state.isShowModalActiveCard = true
+    },
+
+    clearAndHideCurrentActiveCard: (state) => {
+      state.currentActiveCard = null,
+      state.isShowModalActiveCard = false
     },
 
     updateCurrentActiveCard: (state, action) => {
@@ -23,11 +29,14 @@ export const activeCardSlice = createSlice({
 })
 
 // Action là nơi dành cho các components bên dưới gọi dispatch để update data vào redux store qua reducers
-export const { updateCurrentActiveCard, clearCurrentActiveCard } = activeCardSlice.actions
+export const { updateCurrentActiveCard, clearAndHideCurrentActiveCard, showModalActiveCard } = activeCardSlice.actions
 
 //selector là nơi cho các components bên dưới gọi hoo useSelector() để get data trong redux store ra để sử dụng
 export const selectCurrentActiveCard = (state) => {
   return state.activeCard.currentActiveCard
+}
+export const isShowModalActiveCard = (state) => {
+  return state.activeCard.isShowModalActiveCard
 }
 // export default activeCardSlice.reducer
 export const activeCardReducer = activeCardSlice.reducer
