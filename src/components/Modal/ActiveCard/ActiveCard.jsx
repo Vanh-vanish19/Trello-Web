@@ -1,4 +1,3 @@
-import { useState } from 'react'
 import Box from '@mui/material/Box'
 import Modal from '@mui/material/Modal'
 import Typography from '@mui/material/Typography'
@@ -108,6 +107,10 @@ function ActiveCard() {
     event.target.value=''
   }
 
+  const onAddCardComment = async (commentToAdd) => {
+    await callApiToUpdateCard({ commentToAdd })
+  }
+
   return (
     <Modal
       disableScrollLock
@@ -184,7 +187,10 @@ function ActiveCard() {
               </Box>
 
               {/* Feature 04: Xử lý các hành động, ví dụ comment vào Card */}
-              <CardActivitySection />
+              <CardActivitySection
+                cardComments={activeCard?.comments}
+                onAddCardComment={onAddCardComment}
+              />
             </Box>
           </Grid>
 

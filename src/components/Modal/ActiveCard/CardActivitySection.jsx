@@ -4,13 +4,21 @@ import Typography from '@mui/material/Typography'
 import Avatar from '@mui/material/Avatar'
 import TextField from '@mui/material/TextField'
 import Tooltip from '@mui/material/Tooltip'
-
+import { useState } from 'react'
 import { useSelector } from 'react-redux'
 import { selectCurrentUser } from '~/redux/user/userSlice'
+import MoreVertIcon from '@mui/icons-material/MoreVert'
+import IconButton from '@mui/material/IconButton'
+import Menu from '@mui/material/Menu'
+import MenuItem from '@mui/material/MenuItem'
+import EditIcon from '@mui/icons-material/Edit'
+import DeleteIcon from '@mui/icons-material/Delete'
 
-function CardActivitySection() {
+function CardActivitySection({ cardComments=[], onAddCardComment }) {
   const currentUser = useSelector(selectCurrentUser)
-
+  const [anchorEl, setAnchorEl] = useState(null)
+  const [commentIdToDelete, setCommentIdToDelete] = useState(null)
+  const open = Boolean(anchorEl)
   const handleAddCardComment = (event) => {
     // Bắt hành động người dùng nhấn phím Enter && không phải hành động Shift + Enter
     if (event.key === 'Enter' && !event.shiftKey) {
@@ -23,8 +31,28 @@ function CardActivitySection() {
         userDisplayName: currentUser?.displayName,
         content: event.target.value.trim()
       }
-      console.log(commentToAdd)
+      // console.log(commentToAdd)
+      onAddCardComment(commentToAdd).then(() => {
+        event.target.value = ''
+      })
     }
+  }
+  const handleClickMenu = (event, commentId) => {
+    setAnchorEl(event.currentTarget)
+    setCommentIdToDelete(commentId)
+  }
+  const handleCloseMenu = () => {
+    setAnchorEl(null)
+    setCommentIdToDelete(null)
+  }
+
+  // Xử lý xóa comment
+  const handleDeleteComment = () => {
+    if (commentIdToDelete) {
+      // Gọi hàm xử lý xóa được truyền từ ActiveCard
+      // onDeleteCardComment(commentIdToDelete)
+    }
+    handleCloseMenu()
   }
 
   return (
@@ -45,29 +73,36 @@ function CardActivitySection() {
           onKeyDown={handleAddCardComment}
         />
       </Box>
-
       {/* Hiển thị danh sách các comments */}
-      {[...Array(0)].length === 0 &&
+      {cardComments.length === 0 &&
         <Typography sx={{ pl: '45px', fontSize: '14px', fontWeight: '500', color: '#b1b1b1' }}>No activity found!</Typography>
       }
-      {[...Array(6)].map((_, index) =>
+      {cardComments.map((comments, index) =>
         <Box sx={{ display: 'flex', gap: 1, width: '100%', mb: 1.5 }} key={index}>
           <Tooltip title="Vanish">
             <Avatar
               sx={{ width: 36, height: 36, cursor: 'pointer' }}
-              alt="Vanish"
-              src="https://res.cloudinary.com/vanishh/image/upload/v1763734517/hinh-nen-viet-nam-4k_024250712_layxpx.jpg"
+              alt={comments.userDisplayName}
+              src={comments.userAvatar}
             />
           </Tooltip>
-          <Box sx={{ width: 'inherit' }}>
+          <Box sx={{ width: 'inherit', position: 'relative' }}>
             <Typography variant="span" sx={{ fontWeight: 'bold', mr: 1 }}>
-              Viet Anhh
+              {comments.userDisplayName}
             </Typography>
 
             <Typography variant="span" sx={{ fontSize: '12px' }}>
               {moment().format('llll')}
             </Typography>
-
+            <Box sx={{ position: 'absolute', top: 0, right: 0 }}>
+              <IconButton
+                size="small"
+                onClick={(event) => handleClickMenu(event, comments._id)}
+                cursor="pointer"
+              >
+                <MoreVertIcon fontSize="inherit" />
+              </IconButton>
+            </Box>
             <Box sx={{
               display: 'block',
               bgcolor: (theme) => theme.palette.mode === 'dark' ? '#33485D' : 'white',
@@ -78,11 +113,32 @@ function CardActivitySection() {
               wordBreak: 'break-word',
               boxShadow: '0 0 1px rgba(0, 0, 0, 0.2)'
             }}>
-              This is a comment!
+              {comments.content}
             </Box>
           </Box>
         </Box>
       )}
+      <Menu
+        anchorEl={anchorEl}
+        open={open}
+        onClose={handleCloseMenu}
+      >
+        <MenuItem
+          onClick={handleCloseMenu}
+          sx={{ gap: 1 }}
+        >
+          <EditIcon fontSize="small" color="primary" />
+          <Typography variant="body2" sx={{ color: 'primary.main' }}>Edit</Typography>
+        </MenuItem>
+
+        <MenuItem
+          onClick={handleDeleteComment}
+          sx={{ gap: 1 }}
+        >
+          <DeleteIcon fontSize="small" color="error" />
+          <Typography variant="body2" color="error">Delete</Typography>
+        </MenuItem>
+      </Menu>
     </Box>
   )
 }
