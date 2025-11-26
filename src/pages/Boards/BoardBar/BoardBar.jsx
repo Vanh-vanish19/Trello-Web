@@ -10,6 +10,7 @@ import Button from '@mui/material/Button'
 import AddIcon from '@mui/icons-material/Add'
 import { capitalizeFirstLetter } from '~/utils/formatters'
 import BoardUserGroup from './BoardUserGroup'
+import InviteBoardUser from './InviteBoardUser'
 
 const Menu_Styles = {
   color:'white',
@@ -75,23 +76,7 @@ function BoardBar({ board }) {
         />
       </Box>
       <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
-        <Button
-          sx={{
-            color:'white',
-            bgcolor:'transparent',
-            borderColor: 'white',
-            paddingX: '5px',
-            borderRadius: '4px',
-            '.MuiSvgIcon-root':{
-              color: 'white'
-            },
-            '&:hover':{
-              borderColor: 'white'
-            }
-          }}
-          variant='outlined'
-          startIcon={<AddIcon/>
-          }>Invite</Button>
+        <InviteBoardUser boardId = {board?._id } />
         <BoardUserGroup boardUsers ={board?.FE_allUsers}/>
       </Box>
     </Box>
