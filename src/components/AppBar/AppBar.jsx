@@ -13,14 +13,13 @@ import Button from '@mui/material/Button'
 import SearchIcon from '@mui/icons-material/Search'
 import { styled, alpha } from '@mui/material/styles'
 import InputBase from '@mui/material/InputBase'
-import NotificationsIcon from '@mui/icons-material/Notifications'
 import ToolTip from '@mui/material/Tooltip'
-import Badge from '@mui/material/Badge'
 import HelpOutlineIcon from '@mui/icons-material/HelpOutline'
 import Profiles from './Menus/Profiles'
 import CreateIcon from '@mui/icons-material/Create'
 import CloseIcon from '@mui/icons-material/Close'
 import { Link } from 'react-router-dom'
+import Notifications from './Notifications'
 
 const Search = styled('div')(({ theme }) => ({
   position: 'relative',
@@ -131,11 +130,7 @@ function AppBar() {
           </CloseIconWrapper>
         </Search>
         <ModeSelect/>
-        <ToolTip title="Notifications" sx={{ cursor : 'pointer' }}>
-          <Badge color="warning" variant='dot'>
-            <NotificationsIcon sx={{ color: 'white' }}/>
-          </Badge>
-        </ToolTip>
+        <Notifications/>
         <ToolTip title="Help" sx={{ cursor : 'pointer' }}>
           <HelpOutlineIcon sx={{ color: 'white' }}/>
         </ToolTip>
