@@ -13,6 +13,9 @@ import { Provider } from 'react-redux'
 import { BrowserRouter } from 'react-router-dom'
 import { PersistGate } from 'redux-persist/integration/react'
 import { persistStore } from 'redux-persist'
+import { io } from 'socket.io-client'
+import { API_ROOT } from './utils/constants.js'
+export const socketIoInstance = io(API_ROOT)
 
 // injectStore
 import { injectStore } from '~/utils/authorizeAxios'
@@ -21,9 +24,9 @@ injectStore(store)
 const persistor = persistStore(store)
 
 ReactDOM.createRoot(document.getElementById('root')).render(
-  <BrowserRouter basename='/'>
-    <Provider store={store}>
-      <PersistGate persistor={persistor}>
+  <Provider store={store}>
+    <PersistGate persistor={persistor}>
+      <BrowserRouter basename='/'>
         <CssVarsProvider theme={theme}>
           <ConfirmProvider defaultOptions={{
             disableScrollLock: true,
@@ -51,7 +54,7 @@ ReactDOM.createRoot(document.getElementById('root')).render(
             />
           </ConfirmProvider>
         </CssVarsProvider>
-      </PersistGate>
-    </Provider>
-  </BrowserRouter>
+      </BrowserRouter>
+    </PersistGate>
+  </Provider>
 )
