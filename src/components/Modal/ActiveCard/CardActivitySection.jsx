@@ -14,10 +14,10 @@ import MenuItem from '@mui/material/MenuItem'
 import EditIcon from '@mui/icons-material/Edit'
 import DeleteIcon from '@mui/icons-material/Delete'
 
-function CardActivitySection({ cardComments=[], onAddCardComment }) {
+function CardActivitySection({ cardComments=[], onAddCardComment, onDeleteCardComment }) {
   const currentUser = useSelector(selectCurrentUser)
   const [anchorEl, setAnchorEl] = useState(null)
-  const [commentIdToDelete, setCommentIdToDelete] = useState(null)
+  const [commentId, setCommentId] = useState(null)
   const open = Boolean(anchorEl)
   const handleAddCardComment = (event) => {
     // Bắt hành động người dùng nhấn phím Enter && không phải hành động Shift + Enter
@@ -27,6 +27,7 @@ function CardActivitySection({ cardComments=[], onAddCardComment }) {
 
       // Tạo một biến commend data để gửi api
       const commentToAdd = {
+        _id: null, // Id này sẽ được tạo trong service
         userAvatar: currentUser?.avatar,
         userDisplayName: currentUser?.displayName,
         content: event.target.value.trim()
@@ -37,20 +38,20 @@ function CardActivitySection({ cardComments=[], onAddCardComment }) {
       })
     }
   }
-  const handleClickMenu = (event, commentId) => {
+  const handleClickMenu = (event, id) => {
     setAnchorEl(event.currentTarget)
-    setCommentIdToDelete(commentId)
+    setCommentId(id)
   }
   const handleCloseMenu = () => {
     setAnchorEl(null)
-    setCommentIdToDelete(null)
+    setCommentId(null)
   }
 
   // Xử lý xóa comment
   const handleDeleteComment = () => {
-    if (commentIdToDelete) {
+    if (commentId) {
       // Gọi hàm xử lý xóa được truyền từ ActiveCard
-      // onDeleteCardComment(commentIdToDelete)
+      onDeleteCardComment(commentId)
     }
     handleCloseMenu()
   }
