@@ -4,6 +4,7 @@ import Typography from '@mui/material/Typography'
 import Avatar from '@mui/material/Avatar'
 import TextField from '@mui/material/TextField'
 import Tooltip from '@mui/material/Tooltip'
+import Button from '@mui/material/Button'
 import { useState } from 'react'
 import { useSelector } from 'react-redux'
 import { selectCurrentUser } from '~/redux/user/userSlice'
@@ -14,11 +15,17 @@ import MenuItem from '@mui/material/MenuItem'
 import EditIcon from '@mui/icons-material/Edit'
 import DeleteIcon from '@mui/icons-material/Delete'
 
-function CardActivitySection({ cardComments=[], onAddCardComment, onDeleteCardComment }) {
+function CardActivitySection({ cardComments=[], onAddCardComment, onDeleteCardComment, onEditCardComment }) {
+
   const currentUser = useSelector(selectCurrentUser)
   const [anchorEl, setAnchorEl] = useState(null)
-  const [commentId, setCommentId] = useState(null)
   const open = Boolean(anchorEl)
+
+  const [commentId, setCommentId] = useState(null)
+  const [editingCommentId, setEditingCommentId] = useState(null)
+  const [editContent, setEditContent] = useState('')
+
+
   const handleAddCardComment = (event) => {
     // Bắt hành động người dùng nhấn phím Enter && không phải hành động Shift + Enter
     if (event.key === 'Enter' && !event.shiftKey) {
@@ -47,14 +54,33 @@ function CardActivitySection({ cardComments=[], onAddCardComment, onDeleteCardCo
     setCommentId(null)
   }
 
-  // Xử lý xóa comment
   const handleDeleteComment = () => {
-    if (commentId) {
-      // Gọi hàm xử lý xóa được truyền từ ActiveCard
-      onDeleteCardComment(commentId)
+    onDeleteCardComment(commentId)
+    handleCloseMenu()
+  }
+
+  const handleEditComment = () => {
+    const comment = cardComments.find(c => c._id === commentId)
+    if (comment) {
+      setEditingCommentId(commentId)
+      setEditContent(comment.content)
     }
     handleCloseMenu()
   }
+
+  const handleSaveEdit = () => {
+    if (editContent.trim()) {
+      onEditCardComment(editingCommentId, editContent.trim())
+      setEditingCommentId(null)
+      setEditContent('')
+    }
+  }
+
+  const handleCancelEdit = () => {
+    setEditingCommentId(null)
+    setEditContent('')
+  }
+
 
   return (
     <Box sx={{ mt: 2 }}>
@@ -93,29 +119,53 @@ function CardActivitySection({ cardComments=[], onAddCardComment, onDeleteCardCo
             </Typography>
 
             <Typography variant="span" sx={{ fontSize: '12px' }}>
-              {moment().format('llll')}
+              {moment(comments.commentedAt).format('llll')}
             </Typography>
-            <Box sx={{ position: 'absolute', top: 0, right: 0 }}>
-              <IconButton
-                size="small"
-                onClick={(event) => handleClickMenu(event, comments._id)}
-                cursor="pointer"
-              >
-                <MoreVertIcon fontSize="inherit" />
-              </IconButton>
-            </Box>
-            <Box sx={{
-              display: 'block',
-              bgcolor: (theme) => theme.palette.mode === 'dark' ? '#33485D' : 'white',
-              p: '8px 12px',
-              mt: '4px',
-              border: '0.5px solid rgba(0, 0, 0, 0.2)',
-              borderRadius: '4px',
-              wordBreak: 'break-word',
-              boxShadow: '0 0 1px rgba(0, 0, 0, 0.2)'
-            }}>
-              {comments.content}
-            </Box>
+            {editingCommentId === comments._id ? (
+              <Box sx={{ mt: 1 }}>
+                <TextField
+                  fullWidth
+                  multiline
+                  variant="outlined"
+                  value={editContent}
+                  onChange={(e) => setEditContent(e.target.value)}
+                  autoFocus
+                  sx={{
+                    '& .MuiOutlinedInput-root': {
+                      bgcolor: (theme) => theme.palette.mode === 'dark' ? '#33485D' : 'white'
+                    }
+                  }}
+                />
+                <Box sx={{ mt: 1, display: 'flex', gap: 1 }}>
+                  <Button variant="contained" size="small" onClick={handleSaveEdit}>Save</Button>
+                  <Button variant="outlined" size="small" onClick={handleCancelEdit}>Cancel</Button>
+                </Box>
+              </Box>
+            ) : (
+              <>
+                <Box sx={{ position: 'absolute', top: 0, right: 0 }}>
+                  <IconButton
+                    size="small"
+                    onClick={(event) => handleClickMenu(event, comments._id)}
+                    cursor="pointer"
+                  >
+                    <MoreVertIcon fontSize="inherit" />
+                  </IconButton>
+                </Box>
+                <Box sx={{
+                  display: 'block',
+                  bgcolor: (theme) => theme.palette.mode === 'dark' ? '#33485D' : 'white',
+                  p: '8px 12px',
+                  mt: '4px',
+                  border: '0.5px solid rgba(0, 0, 0, 0.2)',
+                  borderRadius: '4px',
+                  wordBreak: 'break-word',
+                  boxShadow: '0 0 1px rgba(0, 0, 0, 0.2)'
+                }}>
+                  {comments.content}
+                </Box>
+              </>
+            )}
           </Box>
         </Box>
       )}
@@ -125,7 +175,7 @@ function CardActivitySection({ cardComments=[], onAddCardComment, onDeleteCardCo
         onClose={handleCloseMenu}
       >
         <MenuItem
-          onClick={handleCloseMenu}
+          onClick={handleEditComment}
           sx={{ gap: 1 }}
         >
           <EditIcon fontSize="small" color="primary" />

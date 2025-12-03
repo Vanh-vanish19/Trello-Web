@@ -117,7 +117,12 @@ function ActiveCard() {
   const onUpdateCardMembers = (incomingMemberInfo) => {
     callApiToUpdateCard({ incomingMemberInfo })
   }
-
+  const onDeleteCardComment = async (commentId) => {
+    await callApiToUpdateCard({ commentToDelete: commentId })
+  }
+  const onEditCardComment = async (commentId, newContent) => {
+    await callApiToUpdateCard({ commentToEdit: commentId, content: newContent })
+  }
   return (
     <Modal
       disableScrollLock
@@ -200,6 +205,8 @@ function ActiveCard() {
               <CardActivitySection
                 cardComments={activeCard?.comments}
                 onAddCardComment={onAddCardComment}
+                onDeleteCardComment={onDeleteCardComment}
+                onEditCardComment={onEditCardComment}
               />
             </Box>
           </Grid>
